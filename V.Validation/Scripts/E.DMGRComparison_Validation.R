@@ -15,7 +15,7 @@ library(readr)
 library(Hmisc)
 source("III.DMGR_analysis/Scripts/Functions/make_heatmaps.R") #this will load custom CGHeatmap and heatmap.3 function
 
-source("III.DMGR_analysis/Scripts/DMcgs_functions.R")
+source("III.DMGR_analysis/Scripts/Functions/DMcgs_functions.R")
 
 ################################
 # Load Function
@@ -157,7 +157,10 @@ dev.off()
 png("V.Validation/Figures/LineGraph_Validation.png", height = 400, width = 400)
 plot(x = 1:nrow(plotReady), y = -log10(as.numeric(paste(plotReady$qvalues))), 
      xlab = "Q value rank", ylab = "-log10 Q value", col = "black", cex = 0.7, 
-     pch = 16)
+     pch = 16, bty = "n")
+
+# Extend the length of the x axis
+axis(1, at=c(0, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5), col = "black")
 
 # Add dashed lines indicating cutoff
 abline(h = -log10(0.01), col = "grey", lwd = 2, lty = "dashed")
@@ -191,20 +194,21 @@ text(x = as.numeric(paste(Indices))[4], y = -log10(as.numeric(paste(Q)))[4] + .0
      rownames(test_set)[4], cex = .7, pos = 2, offset = 4)
 
 # Find the top couple of points
-topPoints <- CombineOrdered[(nrow(CombineOrdered) - 10):nrow(CombineOrdered), ]
+# topPoints <- CombineOrdered[(nrow(CombineOrdered) - 10):nrow(CombineOrdered), ]
+# 
+# points(x = as.numeric(paste(rownames(topPoints))), 
+#        y = -log10(as.numeric(paste(topPoints$qvalues))), 
+#        pch = 16, col = "blue", cex = 1)
+# text(x = as.numeric(paste(rownames(topPoints)))[c(1, 7, 8, 11)], 
+#      y = -log10(as.numeric(paste(topPoints$qvalues)))[c(1, 7, 8, 11)], 
+#      topPoints$Gene_Region[c(1, 7, 8, 11)], cex = .7, pos = 2, offset = 2)
+# text(x = as.numeric(paste(rownames(topPoints)))[c(3, 9)], 
+#      y = -log10(as.numeric(paste(topPoints$qvalues)))[c(3,9)], 
+#      topPoints$Gene_Region[c(3, 9)], cex = .7, pos = 2, offset = .3)
+# text(x = as.numeric(paste(rownames(topPoints)))[c(5, 10)], 
+#      y = -log10(as.numeric(paste(topPoints$qvalues)))[c(5, 10)], 
+#      topPoints$Gene_Region[c(5, 10)], cex = .7, pos = 2, offset = 4.5)
 
-points(x = as.numeric(paste(rownames(topPoints))), 
-       y = -log10(as.numeric(paste(topPoints$qvalues))), 
-       pch = 16, col = "blue", cex = 1)
-text(x = as.numeric(paste(rownames(topPoints)))[c(1, 7, 8, 11)], 
-     y = -log10(as.numeric(paste(topPoints$qvalues)))[c(1, 7, 8, 11)], 
-     topPoints$Gene_Region[c(1, 7, 8, 11)], cex = .7, pos = 2, offset = 2)
-text(x = as.numeric(paste(rownames(topPoints)))[c(3, 9)], 
-     y = -log10(as.numeric(paste(topPoints$qvalues)))[c(3,9)], 
-     topPoints$Gene_Region[c(3, 9)], cex = .7, pos = 2, offset = .3)
-text(x = as.numeric(paste(rownames(topPoints)))[c(5, 10)], 
-     y = -log10(as.numeric(paste(topPoints$qvalues)))[c(5, 10)], 
-     topPoints$Gene_Region[c(5, 10)], cex = .7, pos = 2, offset = 4.5)
-
-legend("topleft", inset = 0.05, title = "DMGRs", c("Test Set", "Top Validation Hits"), fill = c("red", "blue"), cex = .7)
+legend("topleft", inset = 0.05, title = "DMGRs", c("Test Set"), 
+       fill = c("red"), cex = .7, bty = "n")
 dev.off()
