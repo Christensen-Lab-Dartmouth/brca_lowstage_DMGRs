@@ -7,6 +7,7 @@
 
 # This script will summarize samples and inclusion as well as relevant CpGs
 #####################################################################
+
 ################################
 # Load Data
 ################################
@@ -15,6 +16,27 @@ annotation <- read.table("I.Data_Processing/Files/annotationfile.tsv", stringsAs
 
 # Load total covariate file
 covariatesFull <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1, header = T, sep = ",", stringsAsFactors = F)
+
+# stages will be a list of elements that all describe a given stage number
+stages <- list(low = c("Stage I", "Stage IA", "Stage IB", "Stage II", "Stage IIA", "Stage IIB"), 
+               high = c("Stage III", "Stage IIIA", "Stage IIIB", "Stage IIIC","Stage IV"))
+
+# Rename Stages in covariate File
+for (sta in 1:length(stages)) {
+  sta_elem <- unlist(stages[sta])
+  for (stage_spec in 1:length(sta_elem)) {
+    covariatesFull$pathologic_stage[covariatesFull$pathologic_stage == sta_elem[stage_spec]] <- names(stages)[sta]
+  }
+}
+
+# Rename Sample Types in Covariate File
+covariatesFull$sample.type[covariatesFull$sample.type == "Primary Tumor"] <- "Tumor"
+covariatesFull$sample.type[covariatesFull$sample.type == "Metastatic"] <- "Tumor"
+covariatesFull <- covariatesFull[covariatesFull$sample.type == "Tumor", ]
+
+# Remove "Normal-Like" Tumors fromt he covariate file and use only with assignment
+covariatesFull <- covariatesFull[covariatesFull$PAM50.RNAseq != "Normal", ]
+covariatesFull <- covariatesFull[covariatesFull$PAM50.RNAseq != "", ]
 
 ################################
 # Load Function
@@ -74,17 +96,14 @@ countingCov <- function (covariateName, variable) {
 # Load Constants
 ################################
 # initialize several constants; subtypes and covariate files to consider.
-pam50 <- c("Basal", "Her2", "LumA", "LumB", "Normal", "MissingPAM50", "Total")
+pam50 <- c("Basal", "Her2", "LumA", "LumB", "Total")
 cov <- c("Age", "Stage", "sample.type")
 
 # stages will be a list of elements that all describe a given stage number
-stages <- list(stageI = c("Stage I", "Stage IA", "Stage IB"), 
-               stageII = c("Stage II", "Stage IIA", "Stage IIB"), 
-               stageIII = c("Stage III", "Stage IIIA", "Stage IIIB", "Stage IIIC"), 
-               stageIV = c("Stage IV"))
+stages <- list(low = c("low"), high = c("high"))
 
 # We know what we want our table 1 to look like, so begin building it
-Total <- matrix(NA, nrow = 10, ncol = length(pam50))
+Total <- matrix(NA, nrow = 5, ncol = length(pam50))
 for (subtype in 1:length(pam50)) {
   # start by subsetting the covariateFull file into the subtype specific covariate file
   if (pam50[subtype] == "Total") {
@@ -105,32 +124,29 @@ for (subtype in 1:length(pam50)) {
   for (i in 1:length(cov)) {
     # get the total count
     totCount <- nrow(covariates)
-    Total[5, subtype] <- totCount
+    Total[1, subtype] <- totCount
     
     # loop through the covariate information given and get data in the right format for output
     if (cov[i] == "Age") {
       mean <- round(mean(covariates$age.Dx, na.rm = T), 1)
       sd <- round(sd(covariates$age.Dx, na.rm = T), 1)
       # Add to the matrix along the way
-      Total[1, subtype] <- paste(mean, " (", sd, ")", sep = "")
+      Total[2, subtype] <- paste(mean, " (", sd, ")", sep = "")
       
       } else if (cov[i] == "Stage") {
       stageInfo <- countingCov("pathologic_stage", stages)
-      Total[6:9, subtype] <- t(stageInfo)
+      
+      Total[3:4, subtype] <- t(stageInfo)
       missingStage <- nrow(covariates[covariates$pathologic_stage == "" | covariates$pathologic_stage == "Stage X" | covariates$pathologic_stage == "[Discrepancy]",])
-      Total[10, subtype] <- paste(missingStage, " (", round((missingStage / nrow(covariates)*100), 0), "%)", sep = "")             
-   
-       } else if (cov[i] == "sample.type") {
-      typeInfo <- countingCov("sample.type", c("Primary Tumor", "Metastatic", "Solid Tissue Normal"))
-      Total[2:4, subtype] <- t(typeInfo)
+      Total[5, subtype] <- paste(missingStage, " (", round((missingStage / nrow(covariates)*100), 0), "%)", sep = "")             
+      } 
     }
-  }
 }
+
 
 # Total File row and column names
 colnames(Total) <- pam50
-rownames(Total) <- c("Age\nMean (SD)", "Primary Tumor", "Metastatic", "Solid Tissue Normal", "Total Samples",
-                     "Stage I", "Stage II", "Stage III", "Stage IV","Stage Missing")
+rownames(Total) <- c("TCGA Tumor", "Age Mean (SD)", "Low Stage", "High Stage", "Stage Missing")
 
 # write file to disk
 write.table(Total, "I.Data_Processing/Tables/Table1_SampleInfo.csv", row.names = T, col.names = NA, sep = ",")

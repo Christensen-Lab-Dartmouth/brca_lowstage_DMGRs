@@ -1,7 +1,7 @@
 # README #
 
 #####################################################################
-# Analytical Code for "Tumor subtype and cell type independent DNA methylation alterations reveals twelve genes associated with low stage breast carcinoma" 
+# Analytical Code for "Identification and validation of tumor subtype and cell type independent DNA methylation alterations in breast carcinoma" 
 Way, G., Johnson, K., Christensen, B. 2015, Manuscript in preparation
 #####################################################################
 [![DOI](https://zenodo.org/badge/18957/gwaygenomics/brca_lowstage_DMGRs.svg)](https://zenodo.org/badge/latestdoi/18957/gwaygenomics/brca_lowstage_DMGRs)

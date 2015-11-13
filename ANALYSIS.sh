@@ -2,8 +2,8 @@
 
 #####################################################################
 # ~~~~~~~~~~~~~~~~~~
-# Tumor subtype and cell type independent DNA methylation alterations reveals
-# twelve genes associated with low stage breast carcinoma
+# Identification and validation of tumor subtype and cell type independent DNA
+# methylation alterations in breast carcinoma
 # ~~~~~~~~~~~~~~~~~~
 #
 # Way, G., Johnson, K., Christensen, B. 2015
