@@ -20,7 +20,7 @@ Yang et al. Genome Biology 2015).
 # CONTACT
 #######################
 Please report all bugs and direct scripting questions to:
-Gregory.Way.GR@dartmouth.edu.
+GregWay@upenn.edu.
 
 Questions regarding the analysis or other correspondance should be directed to:
 Brock.C.Christensen@dartmouth.edu
