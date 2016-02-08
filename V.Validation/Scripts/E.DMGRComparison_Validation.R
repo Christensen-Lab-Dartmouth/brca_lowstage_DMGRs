@@ -13,8 +13,8 @@
 ################################
 library(readr)
 library(Hmisc)
-source("III.DMGR_analysis/Scripts/Functions/make_heatmaps.R") #this will load custom CGHeatmap and heatmap.3 function
-
+# this will load custom CGHeatmap and heatmap.3 function
+source("III.DMGR_analysis/Scripts/Functions/make_heatmaps.R") 
 source("III.DMGR_analysis/Scripts/Functions/DMcgs_functions.R")
 
 ################################
@@ -44,14 +44,17 @@ find_min_DMGR <- function (data, DMGR) {
 # Load Data
 ################################
 # Load adjusted data and deltas
-adjustedQ <- read.table("V.Validation/Data/Validation_set_qvalues_adjusted.csv", sep = ",", stringsAsFactors = F)
-Val.Deltas <- read.table("V.Validation/Data/Validation_set_delta.csv", sep = ",", stringsAsFactors = F)
+adjustedQ <- read.table("V.Validation/Data/Validation_set_qvalues_adjusted.csv", 
+                        sep = ",", stringsAsFactors = F)
+Val.Deltas <- read.table("V.Validation/Data/Validation_set_delta.csv", sep = ",", 
+                         stringsAsFactors = F)
 
 # Combine them into one variable
 adjustedQ <- cbind(adjustedQ, Val.Deltas)
 
 # Load extended annotation file. This file does not ignore multiple genes for a single cpg
-annotation <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv", stringsAsFactors = F, row.names = 1, 
+annotation <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv", 
+                         stringsAsFactors = F, row.names = 1, 
                          header = T, sep = ",", nrows = 1000000, comment.char = "")
 
 # Append a column of only the first gene and first region to the annotation file
@@ -111,9 +114,63 @@ annotationGR <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv"
 annotationMap <- read_csv("I.Data_Processing/Files/HumanMethylation450_15017482_v.1.1.csv")
 
 # Load covariate file
-covariates <- read.table("V.Validation/Tables/ValidationSampleID.txt", sep = ",", row.names = 1, header = T, 
-                         stringsAsFactors = F)
+covariates <- read.table("V.Validation/Tables/ValidationSampleID.txt", sep = ",", row.names = 1, 
+                         header = T, stringsAsFactors = F)
 covariates <- covariates[colnames(Betas), ]
+
+################################
+# Build twelve DMGR info in validation set
+################################
+# We only need tumor vs. control info
+cov <- data.frame(covariates$Sample_Group)
+rownames(cov) <- rownames(covariates)
+colnames(cov) <- "sample.type"
+cancer <- rownames(cov)[cov$sample.type == "IDC"]
+control <- rownames(cov)[cov$sample.type == "control"]
+
+# Get tumor and control beta values
+cancer <- Betas[ ,cancer]
+control <- Betas[ ,control]
+
+# Build the table
+ValidationTable <- c()
+for (DMGR in rownames(test_set)) {
+  Iso_Results <- CombineOrdered[CombineOrdered$Gene_Region %in% DMGR, ]
+  minQ <- min(Iso_Results$qvalues)
+  minCG <- Iso_Results[Iso_Results$qvalues == minQ, 1]
+  TotalCGs <- nrow(Iso_Results)
+  # Subset to only significant CpGs (< 0.05 Q Value)
+  Iso_Results <- Iso_Results[Iso_Results$qvalues < 0.05, ]
+  if (nrow(Iso_Results) < 1) {
+    rowbuild <- c('NA', minQ, 'NA', 'NA', TotalCGs, minCG)
+  } else {
+    # Subset to only unique CpGs
+    Iso_Results <- Iso_Results[!duplicated(Iso_Results$TargetID), ]
+    medB <- median(Iso_Results$beta)
+    medD <- median(Iso_Results$Delta)
+    sigCG <- c()
+    sign <- c()
+    for (cg in Iso_Results$TargetID) {
+      cancerSub <- mean(as.numeric(paste(cancer[cg, ])))
+      controlSub <- mean(as.numeric(paste(control[cg, ])))
+      if (cancerSub > controlSub) {
+        sign <- paste(sign, '+', sep = ' ')
+      } else {
+        sign <- paste(sign, '-', sep = ' ')
+      }
+      sigCG <- paste(sigCG, cg, sep = ';')
+    }
+    rowbuild <- c(sign, minQ, medB, medD, TotalCGs, sigCG)
+  }
+  ValidationTable <- rbind(ValidationTable, rowbuild)
+}
+
+rownames(ValidationTable) <- rownames(test_set)
+colnames(ValidationTable) <- c('sign', 'min Q', 'med B', 'med D', 
+                               'denominator', 'CpGs')
+
+write.table(ValidationTable, 'V.Validation/Tables/ValidationDMGRs.csv',
+            sep = ',', col.names = NA)
 
 ################################
 # Load Common Overlaps

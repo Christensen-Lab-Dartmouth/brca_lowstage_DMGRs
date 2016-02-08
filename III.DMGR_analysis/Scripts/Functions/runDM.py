@@ -13,7 +13,7 @@
 import os
 
 subtypes = ['Basal', 'Her2', 'LumA', 'LumB', 'Normal'] 
-stages = ['stageI', 'stageII', 'stageIII', 'stageIV']
+stages = ['low', 'high']
 
 for i in subtypes:
 	for j in stages:
