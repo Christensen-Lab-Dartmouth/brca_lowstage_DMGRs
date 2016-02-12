@@ -13,7 +13,8 @@
 #####################
 # CRAN libraries
 #####################
-cran <- c("plyr", "reshape2", "ggplot2", "qvalue", "gridExtra", "readr", "Hmisc")
+cran <- c("plyr", "reshape2", "ggplot2", "qvalue", "gridExtra", "readr", "Hmisc",
+          "VennDiagram")
 install.packages(cran, repos='http://cran.us.r-project.org')
 
 #####################
