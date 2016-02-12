@@ -125,15 +125,15 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
     # Heatmap is different for the Full set than for each individual gene
     if (Full == T) {
       heatmap.3(as.matrix(datasub), col = heatcols, breaks = colbreaks, trace = "none", 
-                labCol = F, cexCol = 0.5, key = T, keysize = 0.75, 
-                KeyValueName="Methylation Beta Values", margins = c(3, 14), 
-                density.info = "none", scale = "none", main = genename, 
+                labCol = F, cexCol = 1.5, key = T, keysize = 0.5, 
+                KeyValueName = "", margins = c(6, 24), 
+                density.info = "none", scale = "none", 
                 ColSideColors = columncolors, ColSideColorsSize = 3, 
                 cexRow = 1.5, labRow = F, RowSideColors = rowcolors, RowSideColorsSize = 1)
       
       legend("topright", legend = c(subtypelables, "", capitalize(stages), "", cpglabels), 
              fill = c(colors,"white", unique(colorStageVector), "white", 
-                      unique(as.character(rowcolors))), border = F, bty = "n", cex = 0.7)
+                      unique(as.character(rowcolors))), border = F, bty = "n", cex = 2)
       
     } else {
       heatmap.3(as.matrix(datasub), col = heatcols, breaks = colbreaks, trace = "none", 
@@ -148,8 +148,8 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
                       unique(as.character(rowcolors))), border = F, 
              bty = "n", cex = 0.7)
     }
-    
-  } else {  # Perform a different set of color commands if we are interested in plotting a heatmap for the validation set
+    # Perform a different set of color commands if we are interested in plotting validation
+  } else {  
     # Get Row Side Colors 
     colCpGs <- c("blue", "purple", "plum2", "yellow", "orange", "lightorange")
     refGroups <- c("Body", "TSS200", "TSS1500", "1stExon", "5'UTR", "3'UTR")
@@ -183,13 +183,13 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
     # Plot the heatmap
     heatmap.3(as.matrix(datasub), col = heatcols, breaks = colbreaks, trace = "none", labCol = F, 
               cexCol = 0.5, key = T, keysize = 0.75, KeyValueName = "Methylation Beta Values",
-              margins = c(3, 14), density.info = "none", scale = "none", main = genename, 
-              ColSideColors = t(columncolors), ColSideColorsSize = 3, 
+              margins = c(3, 20), density.info = "none", scale = "none", 
+              ColSideColors = t(columncolors), ColSideColorsSize = 1, 
               cexRow = 1.5, labRow = F, RowSideColors = rowcolors, RowSideColorsSize = 1)
-    
-    legend("topright", legend = c("Tumor", "Normal", "", cpglabels), 
-           fill = c("black", "white", "white", unique(as.character(rowcolors))), border = F, 
-           bty = "n", cex = 0.7)
+
+    legend("topright", legend = c("Tumor", "Normal", "", cpglabels, "0.8", "0.6", "0.4", "0.2"), 
+           fill = c("black", "white", "white", unique(as.character(rowcolors)), rep("white", 4)), border = F, 
+           bty = "n", cex = 2)
   }
 }
 

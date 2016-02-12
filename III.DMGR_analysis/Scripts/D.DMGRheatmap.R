@@ -82,7 +82,7 @@ CommonOverlaps <- read.csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_Full
                            sep = ",", row.names = 1, header = T, stringsAsFactors = F)
 
 ################################
-# Run Custom HeatMap Function
+# Prepare data for heatmaps
 ################################
 # Extract Genes and Gene Regions
 Genes <- c()
@@ -126,8 +126,10 @@ for (i in 1:length(Genes)) {
 }
 
 # Save to disk
+setwd("~/repos/brca_lowstage_DMGRs/")
+
 png(filename = "III.DMGR_analysis/Figures/heatmaps/Heatmap_LowOverlappingCpGs_0.01.png", 
-    width = 800, height = 700)
+    width = 1800, height = 1400)
 CGHeatmap("Common Low Stage CpGs\n (q value cutoff = 0.01)", lowcgs, regions, annotationGR, 
           annotationMap, Betas, covariates, stages = c("low", "normal"), Full = T, Validation = F)
 dev.off()

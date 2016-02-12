@@ -179,7 +179,7 @@ CommonOverlaps <- read.csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_Full
                            row.names = 1, header = T, stringsAsFactors = F)
 
 ################################
-# Run Custom HeatMap Function
+# Get data ready for heatmap
 ################################
 # Extract Genes and Gene Regions
 Genes <- c()
@@ -206,66 +206,67 @@ for (i in 1:length(Genes)) {
 # Plot Figures (These will be two panels of the same figure)
 ################################
 # Output heatmap visualization
-png("V.Validation/Figures/Heatmap_Validation.png", height = 600, width = 800)
-CGHeatmap("Validation Set", lowcgs, regions, annotationGR, annotationMap, Covariates = covariates, Betas, Validation = T)
+source("III.DMGR_analysis/Scripts/Functions/make_heatmaps.R") 
+png("V.Validation/Figures/Heatmap_Validation.png", height = 800, width = 900)
+CGHeatmap("Validation Set", lowcgs, regions, annotationGR, annotationMap, 
+          Covariates = covariates, Betas, Validation = T)
 dev.off()
 
 # Output Line Graph visualization
-png("V.Validation/Figures/LineGraph_Validation.png", height = 400, width = 400)
+png("V.Validation/Figures/LineGraph_Validation.png", height = 700, width = 800)
+par(mar = c(6, 6, 3, 9))
 plot(x = 1:nrow(plotReady), y = -log10(as.numeric(paste(plotReady$qvalues))), 
-     xlab = "Q value rank", ylab = "-log10 Q value", col = "black", cex = 0.7, 
+     xlab = "", ylab = "", col = "black", 
+     cex = 1.3, cex.lab = 2, xaxt = 'n', yaxt = 'n',
      pch = 16, bty = "n")
 
+title(ylab = "-log10 Q value", line = 3.5, cex.lab = 3)
+title(xlab = "Q Rank", line = 4, cex.lab = 3)
+
 # Extend the length of the x axis
-axis(1, at=c(0, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5), col = "black")
+axis(1, at = c(0, 1e5, 2e5, 3e5, 4e5, 5e5, 6e5), col = "black", cex.lab = 2, cex.axis = 2, lwd = 2)
+axis(2, col = "black", cex.lab = 2, cex.axis = 2, lwd = 2)
 
 # Add dashed lines indicating cutoff
-abline(h = -log10(0.01), col = "grey", lwd = 2, lty = "dashed")
-text(x = 1e+05, y = -log10(0.01)+0.3, "Q = 0.01 cutoff", col = "grey")
-abline(h = -log10(0.05), col = "grey", lwd = 2, lty = "dashed")
-text(x = 1e+05, y = -log10(0.05)+0.3, "Q = 0.05 cutoff", col = "grey")
-
+abline(h = -log10(0.01), col = "grey", lwd = 3, lty = "dashed")
+text(x = 1e+05, y = -log10(0.01) + 0.3, "Q = 0.01", col = "grey", cex = 2.5)
+abline(h = -log10(0.05), col = "grey", lwd = 3, lty = "dashed")
+text(x = 1e+05, y = -log10(0.05) + 0.3, "Q = 0.05", col = "grey", cex = 2.5)
 
 # Add points for the test set overlap
 points(x = as.numeric(paste(Indices)), y = -log10(as.numeric(paste(Q))), pch = 16, 
-       col = "red", cex = 1)
+       col = "red", cex = 1.3)
 
 # Add text in different locations to avoid overlap
-text(x = as.numeric(paste(Indices))[c(1, 5, 8, 11:12)], 
-     y = -log10(as.numeric(paste(Q)))[c(1, 5, 8, 11:12)], 
-     rownames(test_set)[c(1, 5, 8, 11:12)], 
-     cex = .7, pos = 2, offset = 2.1)
-text(x = as.numeric(paste(Indices))[2], y = -log10(as.numeric(paste(Q)))[2] + 0.1, 
-     rownames(test_set)[2], cex = .7, pos = 2, offset = 1.25)
-text(x = as.numeric(paste(Indices))[7], y = -log10(as.numeric(paste(Q)))[7] + 0.1, 
-     rownames(test_set)[7], cex = .7, pos = 2, offset = 1.25)
-text(x = as.numeric(paste(Indices))[10], y = -log10(as.numeric(paste(Q)))[10] + 0.15, 
-     rownames(test_set)[10], cex = .7, pos = 2, offset = 1.25)
-text(x = as.numeric(paste(Indices))[3], y = -log10(as.numeric(paste(Q)))[3] + .025, 
-     rownames(test_set)[3], cex = .7, pos = 2, offset = .25)
-text(x = as.numeric(paste(Indices))[6], y = -log10(as.numeric(paste(Q)))[6] + 0.15, 
-     rownames(test_set)[6], cex = .7, pos = 2, offset = .25)
-text(x = as.numeric(paste(Indices))[9], y = -log10(as.numeric(paste(Q)))[9] + 0.15, 
-     rownames(test_set)[9], cex = .7, pos = 2, offset = 4)
-text(x = as.numeric(paste(Indices))[4], y = -log10(as.numeric(paste(Q)))[4] + .025, 
-     rownames(test_set)[4], cex = .7, pos = 2, offset = 4)
+textcex = 1.7
+text(x = as.numeric(paste(Indices))[1],
+     y = -log10(as.numeric(paste(Q)))[1] + .15,
+     rownames(test_set)[1],
+     cex = textcex, pos = 2, offset = 2.1)  # HDAC4 Body
 
-# Find the top couple of points
-# topPoints <- CombineOrdered[(nrow(CombineOrdered) - 10):nrow(CombineOrdered), ]
-# 
-# points(x = as.numeric(paste(rownames(topPoints))), 
-#        y = -log10(as.numeric(paste(topPoints$qvalues))), 
-#        pch = 16, col = "blue", cex = 1)
-# text(x = as.numeric(paste(rownames(topPoints)))[c(1, 7, 8, 11)], 
-#      y = -log10(as.numeric(paste(topPoints$qvalues)))[c(1, 7, 8, 11)], 
-#      topPoints$Gene_Region[c(1, 7, 8, 11)], cex = .7, pos = 2, offset = 2)
-# text(x = as.numeric(paste(rownames(topPoints)))[c(3, 9)], 
-#      y = -log10(as.numeric(paste(topPoints$qvalues)))[c(3,9)], 
-#      topPoints$Gene_Region[c(3, 9)], cex = .7, pos = 2, offset = .3)
-# text(x = as.numeric(paste(rownames(topPoints)))[c(5, 10)], 
-#      y = -log10(as.numeric(paste(topPoints$qvalues)))[c(5, 10)], 
-#      topPoints$Gene_Region[c(5, 10)], cex = .7, pos = 2, offset = 4.5)
+text(x = as.numeric(paste(Indices))[c(5, 8)], 
+     y = -log10(as.numeric(paste(Q)))[c(5, 8)], 
+     rownames(test_set)[c(5, 8)], 
+     cex = textcex, pos = 2, offset = 2.1)
+text(x = 600000, y = 0.2, 
+     rownames(test_set)[12], cex = textcex, pos = 2, offset = 1.25) # FCGRT TSS1500
+text(x = as.numeric(paste(Indices))[2] - 10000, y = -log10(as.numeric(paste(Q)))[2] + 0.05, 
+     rownames(test_set)[2], cex = textcex, pos = 2, offset = 1.25)  # GNAI2 Body
+text(x = as.numeric(paste(Indices))[11], y = -log10(as.numeric(paste(Q)))[11] + 0.06, 
+     rownames(test_set)[11], cex = textcex, pos = 2, offset = 1.25)  # RPTOR Body
+text(x = as.numeric(paste(Indices))[7], y = -log10(as.numeric(paste(Q)))[7] + 0.2, 
+     rownames(test_set)[7], cex = textcex, pos = 2, offset = 1.25)  # LRP5 Body
+text(x = as.numeric(paste(Indices))[10], y = -log10(as.numeric(paste(Q)))[10] + 0.2, 
+     rownames(test_set)[10], cex = textcex, pos = 2, offset = 1.25)  # ANKRD11 5UTR
+text(x = as.numeric(paste(Indices))[3] - 40000, y = -log10(as.numeric(paste(Q)))[3] + 7, 
+     rownames(test_set)[3], cex = textcex, pos = 2, offset = .25)
+text(x = as.numeric(paste(Indices))[6] - 205000, y = -log10(as.numeric(paste(Q)))[6] + 7, 
+     rownames(test_set)[6], cex = textcex, pos = 2, offset = .25)
+text(x = as.numeric(paste(Indices))[9] + 30000, y = -log10(as.numeric(paste(Q)))[9] + 0.17, 
+     rownames(test_set)[9], cex = textcex, pos = 2, offset = 4)  # CMIP Body
+text(x = as.numeric(paste(Indices))[4], y = -log10(as.numeric(paste(Q)))[4] + .025, 
+     rownames(test_set)[4], cex = textcex, pos = 2, offset = 4)
 
 legend("topleft", inset = 0.05, title = "DMGRs", c("Test Set"), 
-       fill = c("red"), cex = .7, bty = "n")
+       fill = c("red"), cex = 2, bty = "n")
 dev.off()
