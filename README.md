@@ -102,6 +102,7 @@ R --no-save < INSTALL.R
 * survival_2.38-1
 * TxDb.Hsapiens.UCSC.hg19.knownGene_3.1.2
 * qvalue_2.0.0
+* VennDiagram_1.6.16
 * XVector_0.8.0
 
 # Python Version
