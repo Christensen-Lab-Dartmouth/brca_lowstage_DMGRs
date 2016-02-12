@@ -43,13 +43,14 @@ qvalList <- function (beta, subtype, stage, covariates, qvalcut = qvalcut, betac
     } else if (stage == 'stageIV'){
       stageSub <- c("Stage IV")
     } else if (stage == 'all'){
-      stageSub <- c("Stage I", "Stage IA", "Stage IB", "Stage II", "Stage IIA", "Stage IIB", "Stage IIIA", "Stage IIIB", "Stage IIIC", "Stage IV")
+      stageSub <- c("Stage I", "Stage IA", "Stage IB", "Stage II", "Stage IIA", "Stage IIB",
+                    "Stage IIIA", "Stage IIIB", "Stage IIIC", "Stage IV")
     } else {
       print("enter valid stage indicator"); stop()
     }
     
     # This function is taken from "doRefFree_functions.R"
-    stageCov <- subsetStage(covariates, stageSub)
+    stageCov <- subsetStage (covariates, stageSub)
     
     # subset betas
     newBeta <- beta[ ,rownames(covariates)]
@@ -76,12 +77,12 @@ qvalList <- function (beta, subtype, stage, covariates, qvalcut = qvalcut, betac
       tmp <- read.table(paste(filelist, qfiles[i], sep = ""), stringsAsFactors = F, sep = ",")
       
       # Perform Filtering Steps
-      tmp <- tmp[tmp[ ,2] <= as.numeric(paste(qvalcut)), ]
+      tmp <- tmp[tmp[,2] <= as.numeric(paste(qvalcut)),]
       if (betacut != "No") {
-        tmp <- tmp[abs(tmp[ ,3]) >= as.numeric(paste(betacut)), ]
+        tmp <- tmp[abs(tmp[,3]) >= as.numeric(paste(betacut)),]
       }
       # subset tmp_d with the significant cgs
-      tmp_dsub <- tmp_d[rownames(tmp), ]
+      tmp_dsub <- tmp_d[rownames(tmp),]
       # combine into a single dataframe
       tmp <- cbind(tmp, tmp_dsub)
       
@@ -92,7 +93,7 @@ qvalList <- function (beta, subtype, stage, covariates, qvalcut = qvalcut, betac
     return(bhInfo)
     
     # However, the function can also handle the Validation set analysis
-  } else if(type == "Validation"){
+  } else if (type == "Validation"){
     
     # Load model specific q values associated with single CpGs
     unadjustedQ <- read.table("V.Validation/Data/Validation_set_qvalues_unadjusted.csv", sep = ",", stringsAsFactors = F)
@@ -112,7 +113,7 @@ qvalList <- function (beta, subtype, stage, covariates, qvalcut = qvalcut, betac
       tmp <- qlist[[i]]
       
       # Perform Filtering Steps
-      tmp <- tmp[tmp[ ,2] <= as.numeric(paste(qvalcut)), ]
+      tmp <- tmp[tmp[,2] <= as.numeric(paste(qvalcut)),]
       
       # assign to filter.qlist
       filter.qlist[[i]] <- tmp
@@ -126,7 +127,7 @@ qvalList <- function (beta, subtype, stage, covariates, qvalcut = qvalcut, betac
 # splitGene() Function
 ################################
 # This function will split the USCS_RefGene_Name by ";" and will store the first and last genes listed for the specific cpg
-splitGene <- function (Gene) {
+splitGene <- function(Gene) {
   g <- unlist(strsplit(Gene, ";"))
   result <- c(g[1], g[length(g)])
   return(result)
@@ -137,9 +138,8 @@ splitGene <- function (Gene) {
 ################################
 # This function will take the previous function and apply it to each row extracting a vector of first gene name, 
 # gene region of methylation, the associated q value, and the first and last gene names
-getGeneInfo <- function (row){
-  use <- c(splitGene(row$UCSC_RefGene_Name)[1], splitGene(row$UCSC_RefGene_Group)[1], 
-           row$q, row$beta, row$Delta, row$TargetID)
+getGeneInfo <- function(row) {
+  use <- c(splitGene(row$UCSC_RefGene_Name)[1], splitGene(row$UCSC_RefGene_Group)[1], row$q, row$beta, row$Delta, row$TargetID)
   return(use)
 }
 
@@ -152,14 +152,14 @@ parseMethDir <- function(methdir) {
   if (len == 1) {
     this <- "methdir[1]"
   } else {
-    #Build the paste input depending on how long it is
+    # Build the paste input depending on how long it is
     for (i in 1:len) {
       if (i == 1) {
-        this <- paste("paste(", "methdir", "[",i,"]", ",", sep = "")
-      } else if(i != len){
-        this <- paste(this, paste("methdir", "[", i, "]", ",", sep = ""))
+        this <- paste("paste(","methdir","[",i,"]",",", sep = "")
+      } else if (i != len){
+        this <- paste(this, paste("methdir","[",i,"]",",", sep = ""))
       } else {
-        this <- paste(this, paste("methdir", "[", i, "])", sep = ""))
+        this <- paste(this, paste("methdir","[",i,"])",sep = ""))
       }
     }
   }
@@ -169,11 +169,18 @@ parseMethDir <- function(methdir) {
 ################################
 # collapseInfo() Function
 ################################
-# This function will input a matrix of genes and the associated subsettable column and output a matrix of specific genes associated with cpgs and methylated regions with associated q values
-collapseInfo <- function (genes, column, annotation) {
+# This function will input a matrix of genes and the associated subsettable column 
+# and output a matrix of specific genes associated with cpgs and methylated regions 
+# with associated q values
+collapseInfo <- function(genes, column, annotation) {
   newF <- c()
   for (i in 1:length(unique(genes[ ,column]))) {
-    cons <- genes[grepl(unique(genes[ ,column])[i], genes[ ,column]),]
+    cons <- genes[grepl(unique(genes[ ,column])[i], genes[ ,column]), ]
+    
+    if (class(cons) == "matrix") {
+      # subset to only unique cpgs mapping to gene region
+      cons <- cons[!duplicated(cons[ ,5]), ]
+    }
     
     if (class(cons) == "matrix") {
       # get median q value for matrix
@@ -203,7 +210,7 @@ collapseInfo <- function (genes, column, annotation) {
       len <- 1
       mdir <- cons[6]
       cpgUse <- cons[5]
-      denom <- length(unique(annotation[annotation$GeneRegion == cons[1], ]$TargetID))
+      denom <- length(unique(annotation[annotation$GeneRegion == cons[1],]$TargetID))
       use <- c(cons[1], len, parseMethDir(mdir), medq, medb, medd, cpgUse, denom)
     }
     
