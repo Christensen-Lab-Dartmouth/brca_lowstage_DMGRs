@@ -14,6 +14,7 @@
 library(qvalue)
 library(ggplot2)
 library(gridExtra)
+library(R.utils)
 
 ################################
 # Load Constants
@@ -57,56 +58,69 @@ for (subt in subtype) {
     # Plotting margin for adjusted volcano plot
     maxY1 <- max(-log10(as.numeric(paste(adjusted[ ,1])))[!is.infinite(-log10(as.numeric(paste(adjusted[ ,1]))))])
     
+    # Generate the theme of each ggplot
+    overall_theme <-  theme(panel.grid.major = element_blank(), 
+                            panel.grid.minor = element_blank(), 
+                            panel.background = element_blank(), 
+                            panel.border = element_blank(),
+                            axis.line = element_line(size = rel(4), color = "black"), 
+                            axis.text = element_text(size = rel(6), color = "black"),
+                            axis.ticks = element_line(size = rel(5), color = "black"),
+                            axis.ticks.length = unit(0.5, "cm"),
+                            axis.title = element_text(size = rel(6.8)),
+                            axis.title.y = element_text(vjust = 4.5),
+                            axis.title.x = element_text(vjust = -4.5),
+                            plot.title = element_text(size = rel(7.5)),
+                            legend.key.size = unit(2, "cm"),
+                            legend.text = element_text(size = rel(4.5)), 
+                            legend.title = element_text(size = rel(4.7)),
+                            plot.margin = unit(c(1.2, 2, 2, 1.5), 'cm'))
+    
     # Store the plots to then arrange them on a grid to save as png
     # Unadjusted Plot
-    un <- ggplot(unadjusted, aes(as.numeric(paste(unadjusted[ ,3])), -log10(as.numeric(paste(unadjusted[ ,1]))))) + 
-      geom_point(aes(colour = deltas[ ,1])) + 
-      scale_color_gradient2(low = "blue", mid="grey", high = "red") + 
-      labs(list(x = "Beta Coefficient", y = "-log10 p Value", title = paste("Unadjusted\n", subt, sta), color = "Delta"), size = 18) + 
-      geom_hline(yintercept = qcut1, color = "red", lintetype = "longdash") + 
-      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "longdash") +
-      xlim((-1 * maxX), maxX) + ylim(0, maxY) +
-      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), panel.border = element_blank(), 
-            axis.line = element_line(), axis.text = element_text(size = rel(1.4), color = "black"),
-            axis.title = element_text(size = rel(1.6)), plot.title = element_text(size = rel(2)),
-            legend.text = element_text(size = rel(1.2)), legend.title = element_text(size = rel(1.3)),
-            axis.ticks = element_line(size = rel(1.4), color = "black"),
-            axis.line = element_line(size = rel(1.4), color = "black"))
+    un <- ggplot(unadjusted, aes(as.numeric(paste(unadjusted[ ,3])), 
+                                 -log10(as.numeric(paste(unadjusted[ ,1]))))) + 
+      geom_point(aes(colour = deltas[ ,1]), size = 9) + 
+      scale_color_gradient2(low = "blue", mid = "grey", high = "red") + 
+      labs(list(x = "Beta Coefficient", 
+                y = "-log10 p Value", 
+                title = paste("Unadjusted\n", subt, "-", 
+                              capitalize(sta), "Stage"), 
+                color = "Delta")) + 
+      geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
+      geom_hline(yintercept = qcut2, color = "black", lintetype = "dashed", size = 1.8) +
+      xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme
     
     # Adjusted plot
-    ad <- ggplot(adjusted, aes(as.numeric(paste(adjusted[ ,3])), -log10(as.numeric(paste(adjusted[ ,1]))))) + 
-      geom_point(aes(colour = deltas[ ,1])) + 
-      scale_color_gradient2(low = "blue", mid="grey", high = "red") + 
-      labs(list(x = "Beta Coefficient", y = "-log10 p Value", title = paste("Reference Free Adjusted\n", subt, sta), color = "Delta")) + 
-      geom_hline(yintercept = qcut1, color = "red", lintetype = "longdash") + 
-      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "longdash") +
-      xlim((-1 * maxX), maxX) + ylim(0, maxY) + 
-      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), panel.border = element_blank(), 
-            axis.line = element_line(), axis.text = element_text(size = rel(1.4), color = "black"),
-            axis.title = element_text(size = rel(1.6)), plot.title = element_text(size = rel(2)),
-            legend.text = element_text(size = rel(1.2)), legend.title = element_text(size = rel(1.3)),
-            axis.ticks = element_line(size = rel(1.4), color = "black"),
-            axis.line = element_line(size = rel(1.4), color = "black"))
+    ad <- ggplot(adjusted, aes(as.numeric(paste(adjusted[ ,3])), 
+                               -log10(as.numeric(paste(adjusted[ ,1]))))) + 
+      geom_point(aes(colour = deltas[ ,1]), size = 9) + 
+      scale_color_gradient2(low = "blue", mid = "grey", high = "red") + 
+      labs(list(x = "Beta Coefficient", 
+                y = "-log10 p Value", 
+                title = paste("Reference Free Adjusted\n", subt, "-",  
+                              capitalize(sta), "Stage"), 
+                color = "Delta")) + 
+      geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
+      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "dashed", size = 1.8) +
+      xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme
     
     # Adjusted plot with different max y value
-    ad1 <- ggplot(adjusted, aes(as.numeric(paste(adjusted[,3])), -log10(as.numeric(paste(adjusted[,1]))))) + 
-      geom_point(aes(colour = deltas[ ,1])) + 
+    ad1 <- ggplot(adjusted, aes(as.numeric(paste(adjusted[,3])), 
+                                -log10(as.numeric(paste(adjusted[,1]))))) + 
+      geom_point(aes(colour = deltas[ ,1]), size = 9) + 
       scale_color_gradient2(low = "blue", mid="grey", high = "red") + 
-      labs(list(x = "Beta Coefficient", y = "-log10 p Value", title = paste("Reference Free Adjusted \n", subt, sta, "(Resized)"), color = "Delta")) + 
-      geom_hline(yintercept = qcut1, color = "red", lintetype = "longdash") + 
-      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "longdash") +
-      xlim((-1 * maxX), maxX) + ylim(0, maxY1) + 
-      theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), panel.border = element_blank(), 
-            axis.line = element_line(), axis.text = element_text(size = rel(1.4), color = "black"),
-            axis.title = element_text(size = rel(1.6)), plot.title = element_text(size = rel(2)),
-            legend.text = element_text(size = rel(1.2)), legend.title = element_text(size = rel(1.3)),
-            axis.ticks = element_line(size = rel(1.4), color = "black"),
-            axis.line = element_line(size = rel(1.4), color = "black"))
+      labs(list(x = "Beta Coefficient", 
+                y = "-log10 p Value", 
+                title = paste("Reference Free Adjusted \n", subt, "-",
+                              capitalize(sta), "(Resized)"), 
+                color = "Delta")) + 
+      geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
+      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "dashed", size = 1.8) +
+      xlim((-1 * maxX), maxX) + ylim(0, maxY1) + overall_theme
     
-    png(paste("II.RefFreeEWAS/Figures/", subt, "_", sta, "_volcano.png", sep = ""), width = 1000, height = 450)
+    png(paste("II.RefFreeEWAS/Figures/", subt, "_", sta, "_volcano.png", sep = ""), 
+        width = 4000, height = 1800)
     grid.arrange(un, ad, ad1, ncol = 3, nrow = 1)
     dev.off()
   }

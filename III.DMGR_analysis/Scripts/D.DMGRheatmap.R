@@ -13,7 +13,8 @@
 ################################
 library(readr)
 library(Hmisc)
-source("III.DMGR_analysis/Scripts/Functions/make_heatmaps.R") # this will load custom CGHeatmap and heatmap.3 function
+# load custom CGHeatmap and heatmap.3 function
+source("III.DMGR_analysis/Scripts/Functions/make_heatmaps.R") 
 
 ################################
 # Load Data

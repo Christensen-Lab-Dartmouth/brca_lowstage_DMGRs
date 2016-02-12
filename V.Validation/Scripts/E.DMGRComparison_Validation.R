@@ -99,7 +99,7 @@ for (i in 1:nrow(test_set)) {
 plotReady <- CombineOrdered
 
 ################################
-# Load and Process Heatmap Data
+# Load Raw Beta Values
 ################################
 # Load Betas
 Betas <- read_tsv("V.Validation/Data/Validation_Betas.tsv")
