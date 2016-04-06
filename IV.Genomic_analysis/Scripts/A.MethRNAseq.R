@@ -86,17 +86,31 @@ CommonOverlaps <- read.csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_Full
 # Get all the genes in common to low stage tumors
 Genes <- laply(rownames(CommonOverlaps), function(x){unlist(strsplit(x, " "))[1]})
 
+# What are the number of comparisons made here? Bonferroni adjusted p value required.
+num_unique_cpgs <- 0
+for (gene in 1:length(Genes)) {
+  CpGs <- unique(ExtractCommonCGs(Genes[gene], CommonOverlaps))
+  num_cpgs <- length(CpGs)
+  num_unique_cpgs <- num_unique_cpgs + num_cpgs
+}
+
+# 101 Unique CpGs, made for 6 comparisons (5 subtypes + all)
+# Bonferroni adjustment should be made for 6 * 101 = 
+alpha <- 0.05 / (6 * num_unique_cpgs)
+
 # Loop over all genes to output several plots investigating methylation influencing gene expression
 significantCor <- c()
 for (gene in 1:length(Genes)) {
   # Extract the CGs associated with a specific gene
   CpGs <- unique(ExtractCommonCGs(Genes[gene], CommonOverlaps))
+  
   for (i in 1:length(CpGs)) {
     # Create and save all of the plots for each combination of CpGs and Genes
     png(paste("IV.Genomic_analysis/Figures/GeneExprs/", Genes[gene], "_", CpGs[i], ".png", sep = ""), 
         height = 400, width = 400)
-    corTable <- methSeqPlot(gene = Genes[gene], betas = Betas, cg = CpGs[i], covariates = covariates, 
-                            stages = "low", subtypes = subtypes, normalExprs = NormalRNAseq)
+    corTable <- methSeqPlot(gene = Genes[gene], betas = Betas, cg = CpGs[i], covariates = covariates,
+                            method = 'spearman', stages = "low", subtypes = subtypes, 
+                            normalExprs = NormalRNAseq)
     dev.off()
     
     # Output the Correlation Analysis to File as well
@@ -104,7 +118,7 @@ for (gene in 1:length(Genes)) {
                 row.names = T, col.names = NA, sep = ",")
     
     # Test if there are any siginificant findings
-    if (length(corTable[corTable[ , 3] <= 0.05, ]) > 0 | length(corTable[corTable[ , 4] <= 0.05, ]) > 0) {
+    if (length(corTable[corTable[ , 3] <= alpha, ]) > 0 | length(corTable[corTable[ , 4] <= alpha, ]) > 0) {
       for (sig_row in 1:nrow(corTable)) {
         sigHit <- paste("IV.Genomic_analysis/Tables/GeneExprs/", Genes[gene], "_", CpGs[i], ".csv", sep = "")
         if (corTable[sig_row, 3] <= 0.05 | corTable[sig_row, 4] <= 0.05 ) {

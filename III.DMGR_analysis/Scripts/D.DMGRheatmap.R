@@ -126,8 +126,6 @@ for (i in 1:length(Genes)) {
 }
 
 # Save to disk
-setwd("~/repos/brca_lowstage_DMGRs/")
-
 png(filename = "III.DMGR_analysis/Figures/heatmaps/Heatmap_LowOverlappingCpGs_0.01.png", 
     width = 1800, height = 1400)
 CGHeatmap("Common Low Stage CpGs\n (q value cutoff = 0.01)", lowcgs, regions, annotationGR, 

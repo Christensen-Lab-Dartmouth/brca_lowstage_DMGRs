@@ -14,7 +14,7 @@
 # stratefied by PAM50 Subtype.
 #####################################################################
 
-#Install R Packages
+# Install R Packages
 R --no-save < INSTALL.R
 
 ####################
@@ -77,7 +77,7 @@ R --no-save < II.RefFreeEWAS/Scripts/E.Summarize_q.R  # The script will output t
 # Step III: Identifying Differentially Methylated Gene Regions (DMGRs)
 ####################
 # NOTE- This step was performed in the Discovery cluster at Dartmouth College
-python III.DMGR_analysis/Scripts/Functions/runDM.py  # Script will run A.DMcgs.R
+python III.DMGR_analysis/Scripts/A.DMcg.R
 
 # Compare DMGRs within PAM50 across stage and across PAM50 within Stage (Output venn diagrams comparing overlaps) and low/high stage overlap tables
 R --no-save < III.DMGR_analysis/Scripts/B.DMGRcomparison.R

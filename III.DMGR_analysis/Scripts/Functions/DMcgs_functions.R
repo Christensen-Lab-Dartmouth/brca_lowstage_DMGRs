@@ -139,7 +139,8 @@ splitGene <- function(Gene) {
 # This function will take the previous function and apply it to each row extracting a vector of first gene name, 
 # gene region of methylation, the associated q value, and the first and last gene names
 getGeneInfo <- function(row) {
-  use <- c(splitGene(row$UCSC_RefGene_Name)[1], splitGene(row$UCSC_RefGene_Group)[1], row$q, row$beta, row$Delta, row$TargetID)
+  use <- c(splitGene(row$UCSC_RefGene_Name)[1], splitGene(row$UCSC_RefGene_Group)[1], 
+           row$RelToIslandUCSC, row$q, row$beta, row$Delta, row$TargetID)
   return(use)
 }
 
@@ -184,14 +185,14 @@ collapseInfo <- function(genes, column, annotation) {
     
     if (class(cons) == "matrix") {
       # get median q value for matrix
-      medq <- median(as.numeric(paste(cons[ ,2])))
+      medq <- median(as.numeric(paste(cons[ ,3])))
       # get median beta coefficient
-      medb <- median(as.numeric(paste(cons[ ,3])))
+      medb <- median(as.numeric(paste(cons[ ,4])))
       # get median delta
-      medd <- median(as.numeric(paste(cons[ ,4])))
+      medd <- median(as.numeric(paste(cons[ ,5])))
       len <- nrow(cons)
-      mdir <- cons[ ,6]
-      cpgs <- cons[ ,5]
+      mdir <- cons[ ,7]
+      cpgs <- cons[ ,6]
       denom <- length(unique(annotation[annotation$GeneRegion == cons[1, 1], ]$TargetID))
       cpgUse <- c()
       for (j in 1:length(cpgs)) {
@@ -202,21 +203,21 @@ collapseInfo <- function(genes, column, annotation) {
         }    
       }
       
-      use <- c(cons[1, ][1], len, parseMethDir(mdir), medq, medb, medd, cpgUse, denom)
+      use <- c(cons[1, ][1], cons[1, ][2], len, parseMethDir(mdir), medq, medb, medd, cpgUse, denom)
     } else {
-      medq <- as.numeric(paste(cons[2]))
-      medb <- as.numeric(paste(cons[3]))
-      medd <- as.numeric(paste(cons[4]))
+      medq <- as.numeric(paste(cons[3]))
+      medb <- as.numeric(paste(cons[4]))
+      medd <- as.numeric(paste(cons[5]))
       len <- 1
-      mdir <- cons[6]
-      cpgUse <- cons[5]
+      mdir <- cons[7]
+      cpgUse <- cons[6]
       denom <- length(unique(annotation[annotation$GeneRegion == cons[1],]$TargetID))
-      use <- c(cons[1], len, parseMethDir(mdir), medq, medb, medd, cpgUse, denom)
+      use <- c(cons[1], cons[2], len, parseMethDir(mdir), medq, medb, medd, cpgUse, denom)
     }
     
     newF <- rbind(newF, use)
   }
-  colnames(newF) <- c("Gene Region", "nCpG", "Sign", "medQval", "medBetaCoef", "medDelta","cpgs", "denominator")
+  colnames(newF) <- c("Gene Region", "UCSC Region", "nCpG", "Sign", "medQval", "medBetaCoef", "medDelta","cpgs", "denominator")
   rownames(newF) <- 1:nrow(newF)
   return(newF)
 }

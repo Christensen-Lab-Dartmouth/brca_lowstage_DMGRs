@@ -91,13 +91,13 @@ methSeqPlot <- function (gene, betas, cg, covariates, stages, subtypes, normalEx
         subset <- outputCorReadyFrame[outputCorReadyFrame$Subtype == useSubtypes[i] & outputCorReadyFrame$Stage == as.character(paste(unique(outputCorReadyFrame$Stage)[j])), ]
         
         # Add the correlations to the matrix
-        correlations[i, j] <- round(cor(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method), 2)
+        correlations[i, j] <- cor(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method)
         
         # Get the probabilities
         pr <- cor.test(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method)
         
         # Sore in tables
-        probability[i, j] <- round(pr$p.value, 2)
+        probability[i, j] <- pr$p.value
         samplesize[i, j] <- nrow(subset)
       }
     }
@@ -105,18 +105,18 @@ methSeqPlot <- function (gene, betas, cg, covariates, stages, subtypes, normalEx
     subset <- outputCorReadyFrame[outputCorReadyFrame$Subtype == "Normal", ]
     
     # Add Normal sample correlations, probabilities and sample size
-    correlations[5, 1] <- round(cor(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method), 2)
+    correlations[5, 1] <- cor(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method)
     pr <- cor.test(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method)
-    probability[5, 1] <- round(pr$p.value, 2)
+    probability[5, 1] <- pr$p.value, 2
     samplesize[5, 1] <- nrow(subset)
     
     allTumor <- plotFrame[plotFrame$Stage != "Normal", ]
     
     # Add Full correlations, probabilities and sample size
-    correlations[5, 2] <- round(cor(as.numeric(paste(allTumor$RNAseq)), as.numeric(paste(allTumor$Beta)), 
-                                    method = method), 2)
+    correlations[5, 2] <- cor(as.numeric(paste(allTumor$RNAseq)), as.numeric(paste(allTumor$Beta)), 
+                                    method = method)
     pr <- cor.test(as.numeric(paste(allTumor$RNAseq)), as.numeric(paste(allTumor$Beta)), method = method)
-    probability[5, 2] <- round(pr$p.value, 2)
+    probability[5, 2] <- pr$p.value
     samplesize[5, 2] <- nrow(allTumor)
   }
   colnames(correlations) <- colnames(samplesize) <- colnames(probability) <- c("low", "high")

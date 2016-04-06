@@ -115,10 +115,10 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
     heatcols <- colorRampPalette(c("yellow", "black", "blue"))(n = 600)
     colbreaks <- seq(0, 1, 1/600)
     
-    # Change the name of the "Normal" variable
+    # Change the name of some variables
     subtypelables <- subtypes
     subtypelables[length(subtypelables)] <- "Normal-Like"
-    
+    subtypelables[grepl('Basal', subtypelables)] <- 'Basal-Like'
     ################################
     # Plot Heatmap
     ################################
@@ -130,8 +130,8 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
                 density.info = "none", scale = "none", 
                 ColSideColors = columncolors, ColSideColorsSize = 3, 
                 cexRow = 1.5, labRow = F, RowSideColors = rowcolors, RowSideColorsSize = 1)
-      
-      legend("topright", legend = c(subtypelables, "", capitalize(stages), "", cpglabels), 
+      stage_names <- c('Early', 'Late')
+      legend("topright", legend = c(subtypelables, "", stage_names, "", cpglabels), 
              fill = c(colors,"white", unique(colorStageVector), "white", 
                       unique(as.character(rowcolors))), border = F, bty = "n", cex = 2)
       
@@ -162,6 +162,7 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
       c <- colCpGs[match(cpglabels[i], refGroups)]
       cpgcolVector[cpgcolVector == cpglabels[i]] <- c
     }
+    
     # Get colors in correct matrix format
     rowcolors <- as.matrix(t(cpgcolVector))
     

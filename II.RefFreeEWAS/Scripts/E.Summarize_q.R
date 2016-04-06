@@ -88,12 +88,19 @@ for (i in 1:length(stages)) {
     lengthCommon <- c(lengthCommon, length(goodq_val))
   }
   
+  # Get title of plot ready
+  if (stages[i] == 'low') {
+    stage_name = 'Early'
+  } else {
+    stage_name = 'Late'
+  }
+  
   # Make plot and save figures
-  png(paste("II.RefFreeEWAS/Figures/QValueThreshold_", stages[i], ".png", sep = ""), height = 400, width = 550) 
+  png(paste("II.RefFreeEWAS/Figures/QValueThreshold_", stage_name, ".png", sep = ""), height = 400, width = 550) 
   par(mar = c(4,6,4,4))
   plot(x = qrange, y = lengthCommon, pch = 19, xlab = "Q Value Cutoffs", xlim = c(-.01, .11) ,
        ylab = "Number of Overlapping\nGene Regions", 
-       main = paste("Q value Threshold\nOverlapping", stages[i], "Stage"))
+       main = paste("Q value Threshold\nOverlapping", stage_name, "Stage"))
   abline(h = lengthCommon[2], lty = 2, col = "red")  # lengthCommon[2] = 0.01 q cut
   abline(h = lengthCommon[6], lty = 2, col = "blue")  # lengthCommon[6] = 0.05 q cut
   text(qrange, lengthCommon, paste(qrange, "-", lengthCommon), cex = 0.75, pos = 4)

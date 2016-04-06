@@ -85,16 +85,20 @@ covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", ro
 # Load Constants
 ################################
 # the index where the gene regions are held in the annotation file
-ind <- 1
-subtypes <- c("Basal", "Her2", "LumA", "LumB", "Normal")
+gene_region_ind <- 1
+ucsc_ind <- 2
+subtypes <- c("Basal", "Her2", "LumA", "LumB")
 
 ################################
 # Within Subtype Comparison
 ################################
 # Initialize several lists and characters
 summaryModelList <- list()
+summaryModelList_ucsc <- list()
 TotalRegions <- c()
+TotalUCSC <- c()
 MasterList <- list()
+MasterList_ucsc <- list()
 for (i in 1:length(subtypes)) {
   # Get the files in the adjusted list according to the given subtype
   files <- grep(subtypes[i], names(AdjustedList))  
@@ -106,33 +110,41 @@ for (i in 1:length(subtypes)) {
     names(sheets)[j] <- names(AdjustedList)[files[j]]
     
     # rename the column with gene regions
-    colnames(sheets[[j]])[ind] <- c("Gene:Region")
+    colnames(sheets[[j]])[gene_region_ind] <- c("Gene:Region")
+    colnames(sheets[[j]])[ucsc_ind] <- c("Gene:UCSC")
     cat(nrow(sheets[[j]]), "\n")
   }
   
   # loop over the adjusted files (high vs. low subtype) to make a character string holding region information
   regions <- c()
+  ucsc <- c()
   for (k in 1:length(sheets)) {
     if (k == 1) {
-      regions <- sheets[[k]][ ,ind]
+      regions <- sheets[[k]][ ,gene_region_ind]
+      ucsc <- sheets[[k]][ , ucsc_ind]
     } else {
-      regions <- c(regions, sheets[[k]][ ,ind])
+      regions <- c(regions, sheets[[k]][ ,gene_region_ind])
+      ucsc <- c(ucsc, sheets[[k]][ ,ucsc_ind])
     }  
   } 
   
   # get all the unique gene regions
   regions <- unique(regions)
+  ucsc <- unique(ucsc)
   
   # build a background of Total regions
   TotalRegions <- c(TotalRegions, regions)
+  TotalUCSC <- c(TotalUCSC, ucsc)
   cat(subtypes[i], ": Number of unique gene regions:", length(regions), "\n")
+  cat(subtypes[i], ": Number of unique UCSC regions:", length(TotalUCSC), "\n")
   
   # Create a matrix to visualize Gene:Region overlaps within subtype across stage
   sumModel <- matrix(NA, nrow = length(regions), ncol = length(sheets))
+  sumModel_ucsc <- matrix(NA, nrow = length(ucsc), ncol = length(sheets))
   for (k in 1:length(sheets)) {
     vector <- c()
     for (l in 1:length(regions)) {
-      if (regions[l] %in% sheets[[k]][ ,ind]) {
+      if (regions[l] %in% sheets[[k]][, gene_region_ind]) {
         tmp <- 1
       } else {
         tmp <- 0
@@ -140,20 +152,33 @@ for (i in 1:length(subtypes)) {
       vector <- c(vector, tmp)
     }
     sumModel[ ,k] <- vector
+    vector <- c()
+    for (l in 1:length(ucsc)) {
+      if (ucsc[l] %in% sheets[[k]][, ucsc_ind]) {
+        tmp <- 1
+      } else {
+        tmp <- 0
+      }
+      vector <- c(vector, tmp)
+    }
+    sumModel_ucsc[, k] <- vector
   }
   rownames(sumModel) <- regions
-  colnames(sumModel) <- c(paste(subtypes[i], "high", sep = "_"), paste(subtypes[i], "low", sep = "_"))
+  rownames(sumModel_ucsc) <- ucsc
+  colnames(sumModel) <- colnames(sumModel_ucsc) <- c(paste(subtypes[i], "high", sep = "_"), 
+                                                     paste(subtypes[i], "low", sep = "_"))
   
   # store info in the summary model list  
   summaryModelList[[i]] <- sumModel
-  names(summaryModelList)[i] <- subtypes[i]
+  summaryModelList_ucsc[[i]] <- sumModel_ucsc
+  names(summaryModelList)[i] <- names(summaryModelList_ucsc)[i] <- subtypes[i]
   
   # Look at overlapping Regions (high vs. low vs. overlap)
   lowindex <- c()
   highindex <- c()
   overlapindex <- c()
   for (p in 1:nrow(sumModel)) {
-    row <- sumModel[p,]
+    row <- sumModel[p, ]
     if (row[1] == 1 & row[2] == 1) {
       overlapindex <- c(overlapindex, p)  
     } else if (row[1] == 1 & row[2] == 0) {
@@ -167,20 +192,51 @@ for (i in 1:length(subtypes)) {
   both.l <- c(overlapindex, lowindex)
   
   # get gene regions included in specific sets
-  High <- sheets[[1]][sheets[[1]][,ind] %in% rownames(sumModel[both.h,]),]
-  Low <- sheets[[2]][sheets[[2]][,ind] %in% rownames(sumModel[both.l,]),]
-  HighOnly <- sheets[[1]][sheets[[1]][,ind] %in% rownames(sumModel[highindex,]),]
-  LowOnly <- sheets[[2]][sheets[[2]][,ind] %in% rownames(sumModel[lowindex,]),] 
-  OverlapHigh <- sheets[[1]][sheets[[1]][,ind] %in% rownames(sumModel[overlapindex,]),]
-  OverlapLow <- sheets[[2]][sheets[[2]][,ind] %in% rownames(sumModel[overlapindex,]),]
+  High <- sheets[[1]][sheets[[1]][, gene_region_ind] %in% rownames(sumModel[both.h, ]), ]
+  Low <- sheets[[2]][sheets[[2]][, gene_region_ind] %in% rownames(sumModel[both.l, ]), ]
+  HighOnly <- sheets[[1]][sheets[[1]][, gene_region_ind] %in% rownames(sumModel[highindex, ]), ]
+  LowOnly <- sheets[[2]][sheets[[2]][, gene_region_ind] %in% rownames(sumModel[lowindex, ]), ] 
+  OverlapHigh <- sheets[[1]][sheets[[1]][, gene_region_ind] %in% rownames(sumModel[overlapindex, ]), ]
+  OverlapLow <- sheets[[2]][sheets[[2]][, gene_region_ind] %in% rownames(sumModel[overlapindex, ]), ]
   
   MasterList[[i]] <- list("High" = High, "Low" = Low, "High-Only" = HighOnly, "Low-Only" = LowOnly, 
                           "Overlap" = list("OverlapHigh" = OverlapHigh, "OverlapLow" = OverlapLow))
   names(MasterList)[i] <- subtypes[i]
+  
+  # Look at overlapping Regions (high vs. low vs. overlap) -- UCSC
+  lowindex <- c()
+  highindex <- c()
+  overlapindex <- c()
+  for (p in 1:nrow(sumModel_ucsc)) {
+    row <- sumModel_ucsc[p, ]
+    if (row[1] == 1 & row[2] == 1) {
+      overlapindex <- c(overlapindex, p)  
+    } else if (row[1] == 1 & row[2] == 0) {
+      highindex <- c(highindex, p)
+    } else {
+      lowindex <- c(lowindex, p)
+    }
+  }
+  
+  both.h <- c(overlapindex, highindex)
+  both.l <- c(overlapindex, lowindex)
+  
+  # get gene regions included in specific sets
+  High <- sheets[[1]][sheets[[1]][, ucsc_ind] %in% rownames(sumModel_ucsc[both.h, ]), ]
+  Low <- sheets[[2]][sheets[[2]][, ucsc_ind] %in% rownames(sumModel_ucsc[both.l, ]), ]
+  HighOnly <- sheets[[1]][sheets[[1]][, ucsc_ind] %in% rownames(sumModel_ucsc[highindex, ]), ]
+  LowOnly <- sheets[[2]][sheets[[2]][, ucsc_ind] %in% rownames(sumModel_ucsc[lowindex, ]), ] 
+  OverlapHigh <- sheets[[1]][sheets[[1]][, ucsc_ind] %in% rownames(sumModel_ucsc[overlapindex, ]), ]
+  OverlapLow <- sheets[[2]][sheets[[2]][, ucsc_ind] %in% rownames(sumModel_ucsc[overlapindex, ]), ]
+  
+  MasterList_ucsc[[i]] <- list("High" = High, "Low" = Low, "High-Only" = HighOnly, "Low-Only" = LowOnly, 
+                          "Overlap" = list("OverlapHigh" = OverlapHigh, "OverlapLow" = OverlapLow))
+  names(MasterList_ucsc)[i] <- subtypes[i]
 }
 
 TotalRegions <- unique(TotalRegions)
-rm(AdjustedFiles, AdjustedList, files, highindex, i, j, k, l, lowindex, masterFiles, overlapindex, p, row, sheets, tmp, UnadjustedFiles, UnadjustedList, vector, High, Low, OverlapHigh, OverlapLow, regions, sumModel, HighOnly, LowOnly, both.h, both.l)
+TotalUCSC <- unique(TotalUCSC)
+
 ################################
 # Venn Diagrams of overlap within subtype
 ################################
@@ -241,22 +297,19 @@ colnames(IntersectionsLow) <- rownames(IntersectionsLow) <- subtypes
 
 ################################
 # Venn Diagram of Gene Region Overlaps across subtypes within stage
+# Gene Region Analysis
 ################################
 stage <- c("high", "low")
 VennLabels <- list()
 for (k in 1:length(stage)) {
-  # Subset covariate summary by stage to extract text for plot
-  subs <- covariatesummary[grepl(stage[k], rownames(covariatesummary)),]
-
   # initialize a venn matrix to get ready for overlaps 
-  # (-1 subtype because we are not considering Normal-Like for this analysis)
-  Venn <- matrix(NA, nrow = length(TotalRegions), ncol = (length(subtypes)-1)) 
+  Venn <- matrix(NA, nrow = length(TotalRegions), ncol = length(subtypes))
   rownames(Venn) <- TotalRegions
   colnames(Venn) <- subtypes[1:4]
-  for (i in 1:(length(MasterList) - 1)) {
+  for (i in 1:length(MasterList)) {
     vector <- c()
     for (j in 1:length(TotalRegions)) {
-      if(TotalRegions[j] %in% MasterList[[i]][[k]][ ,ind]) {
+      if(TotalRegions[j] %in% MasterList[[i]][[k]][, gene_region_ind]) {
         tmp <- 1
       } else {
         tmp <- 0
@@ -273,15 +326,60 @@ for (k in 1:length(stage)) {
   her2_venn <- getgenevenn(Venn, 2)
   luma_venn <- getgenevenn(Venn, 3)
   lumb_venn <- getgenevenn(Venn, 4)
-  venn.plot <- venn.diagram(x = list('Basal' = basal_venn,
-                                     'Lum B' = lumb_venn,
+  venn.plot <- venn.diagram(x = list('Basal-like' = basal_venn,
+                                     'Luminal B' = lumb_venn,
                                      'Her2' = her2_venn,
-                                     'Lum A' = luma_venn),
-                            filename = paste("III.DMGR_analysis/Figures/Venn_", stage[k], ".png", sep = ''),
+                                     'Luminal A' = luma_venn),
+                            filename = paste("III.DMGR_analysis/Figures/Venn_", stage[k], 
+                                             "_gene_region.png", sep = ''),
                             height = 3000, width = 2150,
                             fill = c("red", "cyan", "pink", "blue"),
-                            cat.cex = rep(1.6, 4),
-                            margin = 0.02, cex = 1.2,
+                            cat.cex = rep(1.3, 4),
+                            margin = 0.07, cex = 1.2,
+                            main.cex = 2)
+}
+
+################################
+# Venn Diagram of Gene Region Overlaps across subtypes within stage
+# UCSC Region analysis
+################################
+stage <- c("high", "low")
+VennLabels_ucsc <- list()
+for (k in 1:length(stage)) {
+  # initialize a venn matrix to get ready for overlaps 
+  Venn_UCSC <- matrix(NA, nrow = length(TotalUCSC), ncol = length(subtypes))
+  rownames(Venn_UCSC) <- TotalUCSC
+  colnames(Venn_UCSC) <- subtypes[1:4]
+  for (i in 1:length(MasterList_ucsc)) {
+    vector <- c()
+    for (j in 1:length(TotalUCSC)) {
+      if(TotalUCSC[j] %in% MasterList_ucsc[[i]][[k]][, ucsc_ind]) {
+        tmp <- 1
+      } else {
+        tmp <- 0
+      }
+      vector <- c(vector, tmp)
+    }
+    Venn_UCSC[ ,i] <- vector
+  }
+  
+  VennLabels_ucsc[[k]] <- Venn_UCSC
+  names(VennLabels_ucsc)[k] <- stage[k]
+  
+  basal_venn <- getgenevenn(Venn_UCSC, 1)
+  her2_venn <- getgenevenn(Venn_UCSC, 2)
+  luma_venn <- getgenevenn(Venn_UCSC, 3)
+  lumb_venn <- getgenevenn(Venn_UCSC, 4)
+  venn.plot <- venn.diagram(x = list('Basal-like' = basal_venn,
+                                     'Luminal B' = lumb_venn,
+                                     'Her2' = her2_venn,
+                                     'Luminal A' = luma_venn),
+                            filename = paste("III.DMGR_analysis/Figures/Venn_", stage[k],
+                                             "_ucsc_region.png", sep = ''),
+                            height = 3000, width = 2150,
+                            fill = c("red", "cyan", "pink", "blue"),
+                            cat.cex = rep(1.3, 4),
+                            margin = 0.07, cex = 1.2,
                             main.cex = 2)
 }
 
@@ -289,13 +387,14 @@ for (k in 1:length(stage)) {
 # Specifically Investigating Overlapping Gene Regions associated with Low Stage
 ################################
 #These are the regions in common for low stage (across all four PAM50 subtypes)
-CommonLow <- rownames(VennLabels[[2]][VennLabels[[2]][,1] == 1 & VennLabels[[2]][,2] == 1 & VennLabels[[2]][,3] == 1 & VennLabels[[2]][,4] ==  1,])
+CommonLow <- rownames(VennLabels[[2]][VennLabels[[2]][ ,1] == 1 & VennLabels[[2]][ ,2] == 1 & 
+                                        VennLabels[[2]][ ,3] == 1 & VennLabels[[2]][ ,4] ==  1, ])
 
 commonSummary <- c()
-for (i in 1:(length(MasterList)-1)) {
+for (i in 1:(length(MasterList))) {
   
   # subset the master list subtype specific significant DMGRs with the common low gene regions
-  tmp <- MasterList[[i]][[2]][MasterList[[i]][[2]][,ind] %in% CommonLow, ]
+  tmp <- MasterList[[i]][[2]][MasterList[[i]][[2]][, gene_region_ind] %in% CommonLow, ]
   
   # extract information from this subset
   Q <- tmp$medQval
@@ -353,3 +452,11 @@ rownames(commonSummaryHigh) <- tmp[,1]
 colnames(commonSummaryHigh) <- colnames(commonSummary)[c(-22, -23)]
 
 write.table(commonSummaryHigh, file = "III.DMGR_analysis/Tables/commonLowStageOverlaps_HighStage.csv", sep = ",", row.names = T, col.names = NA)
+
+################################
+# Specifically Investigating Overlapping UCSC Regions associated with Low Stage
+################################
+#These are the regions in common for low stage (across all four PAM50 subtypes)
+Crownames(VennLabels_ucsc[[2]][VennLabels_ucsc[[2]][ ,1] == 1 & VennLabels_ucsc[[2]][ ,2] == 1 & 
+                               VennLabels_ucsc[[2]][ ,3] == 1 & VennLabels_ucsc[[2]][ ,4] ==  1, ])
+

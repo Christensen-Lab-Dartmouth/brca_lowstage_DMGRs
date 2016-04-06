@@ -9,7 +9,7 @@
 # regions (DMGRs) and describe direction of aberrent methylation for a 
 # given q value cutoff.
 #####################################################################
-setwd("C:/Users/Greg/Desktop/cellprop_methylation_2")
+
 ################################
 # Load Libraries
 ################################
@@ -21,9 +21,26 @@ source("II.RefFreeEWAS/Scripts/Functions/doRefFree_functions.R")
 source("III.DMGR_analysis/Scripts/Functions/DMcgs_functions.R")
 
 ################################
-# Load commandArgs
-################################1
-#args <- commandArgs(trailingOnly = T)
+# Load Data
+################################
+# Load total covariate file
+covariates_full <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1,
+                         header = T, sep = ",", stringsAsFactors = F)
+rownames(covariates_full) <- covariates_full$Basename
+
+# Load extended annotation file. This file does not ignore multiple genes for a single cpg
+annotation <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv", stringsAsFactors = F, 
+                         row.names = 1, header = T, sep = ",", nrows = 1000000, comment.char = "")
+
+# Append a column of only the first gene and first region to the annotation file
+annoFirst <- apply(annotation, 1, function(x){splitGene(x[12])[1]})
+annoReg <- apply(annotation, 1, function(x){splitGene(x[14])[1]})
+annotation <- cbind(annotation, paste(annoFirst, annoReg))
+colnames(annotation)[ncol(annotation)] <- "GeneRegion"
+
+################################
+# Analysis
+################################
 s <- c('low', 'high')
 t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
 
@@ -48,23 +65,8 @@ for (model_stage in s) {
     rownames(beta2) <- beta2[ ,1]
     beta2 <- beta2[ ,-1]
     
-    # Load total covariate file
-    covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1,
-                             header = T, sep = ",", stringsAsFactors = F)
-    rownames(covariates) <- covariates$Basename
-    
     # Subset the covariate data to only the samples in the beta file
-    covariates <- covariates[intersect(rownames(covariates), colnames(beta2)), ]
-    
-    # Load extended annotation file. This file does not ignore multiple genes for a single cpg
-    annotation <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv", stringsAsFactors = F, 
-                             row.names = 1, header = T, sep = ",", nrows = 1000000, comment.char = "")
-    
-    # Append a column of only the first gene and first region to the annotation file
-    annoFirst <- apply(annotation, 1, function(x){splitGene(x[12])[1]})
-    annoReg <- apply(annotation, 1, function(x){splitGene(x[14])[1]})
-    annotation <- cbind(annotation, paste(annoFirst, annoReg))
-    colnames(annotation)[ncol(annotation)] <- "GeneRegion"
+    covariates <- covariates_full[intersect(rownames(covariates_full), colnames(beta2)), ]
     
     # Label samples
     cancer <- intersect(colnames(beta2), rownames(covariates[grepl("Tumor", covariates$sample.type),]))
@@ -88,6 +90,7 @@ for (model_stage in s) {
       if (nrow(q[[1]][[i]]) != 0) {
         # Extract the q value information
         frame <- q[[1]][[i]]
+        
         # name it
         frame <- cbind(rownames(frame), frame)
         
@@ -103,6 +106,7 @@ for (model_stage in s) {
         # combine q value info with annotation
         anno.sub[[i]] <- cbind(sub, frame.sub)
         names(anno.sub)[i] <- names(q[[1]])[i]
+        
       } else {
         cat("No Significant q value cgs")
       }
@@ -111,23 +115,27 @@ for (model_stage in s) {
     ################################
     # Compile DMGRs, location, direction and write to file
     ################################
-    # Apply the functions in "II.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" to output specific matrix and write to file
+    # Apply the functions in "II.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" 
+    # to output specific matrix and write to file
     for (j in 1:length(anno.sub)) {
+      
       # Subset Beta File
       betaSub <- beta2[unique(anno.sub[[j]]$TargetID), rownames(q[[2]])]
       
       # Initialize a new dataframe to store gene info
       newFrame <- c()
       for (i in 1:nrow(anno.sub[[j]])) {
+        
         row <- anno.sub[[j]][i, ]
+        
         # use function getGeneInfo to extract information for each row
         info <- getGeneInfo(row)
-        a <- c(paste(info[1], info[2]), info[3:6])
-        newFrame <- rbind(newFrame, a)
+        info <- c(paste(info[1], info[2]), paste(info[1], info[3]), info[4:length(info)])
+        newFrame <- rbind(newFrame, info)
       }
       
       # Extract the significantly differentially methylated cpgs
-      cpgs <- newFrame[,5]
+      cpgs <- newFrame[,6]
       cat("Number of total:", length(cpgs), "\n", "Number of Unique:", length(unique(cpgs)), "\n")
       
       # Subset to cancer and normal samples
@@ -156,9 +164,7 @@ for (model_stage in s) {
       # Collapse info into writable dataframe
       methylatedFrame <- collapseInfo(newFrame, 1, annotation)
       write.table(methylatedFrame, file = paste("III.DMGR_analysis/Results/DMR_", names(anno.sub)[j], 
-                                                qvalcut, ".csv", sep = ""), row.names = F, sep = ",")
+                                                qvalcut, "_with_UCSC_Region.csv", sep = ""), row.names = F, sep = ",")
     }
   }
 }
-
-

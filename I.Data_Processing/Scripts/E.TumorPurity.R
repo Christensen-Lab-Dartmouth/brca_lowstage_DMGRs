@@ -15,7 +15,8 @@ library(reshape2)
 library(ggplot2)
 
 # Load and subset covariate file
-covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1, header = T, sep = ",", stringsAsFactors = F)
+covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1, 
+                         header = T, sep = ",", stringsAsFactors = F)
 
 # We are only interested in summarizing Primary Tumors
 covariates <- covariates[covariates$sample.type == "Primary Tumor",]
@@ -111,7 +112,10 @@ for (i in 1:length(stage)) {
 ggplot(data = melt(ggplotCov), aes(x = variable, y = as.numeric(paste(value)))) + 
   geom_boxplot(aes(fill = PAM50.RNAseq, colour = pathologic_stage)) + 
   scale_x_discrete(labels = c("Tumor Cells", "Stromal Cells", "Normal Cells")) + 
-  scale_colour_manual(values = c("High" = "red", "Low" = "blue")) + xlab("") + ylab("Percentage") + 
+  scale_colour_manual(values = c("gold", "green"), labels = c('Late', 'Early')) + 
+  scale_fill_manual(values = c("red", "pink", "blue", "cyan"),
+                    labels = c('Basal-Like', 'Her2', 'Luminal A', 'Luminal B')) +
+  xlab("") + ylab("Percentage") + 
   ggtitle("Summary of Tumor Purity") + theme_bw()
 
 ggsave(filename = paste("I.Data_Processing/Figures/covariateSummaryBarPlot.png", sep = ""), width = 10, height = 8)

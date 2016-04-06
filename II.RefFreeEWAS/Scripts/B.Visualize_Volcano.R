@@ -13,6 +13,7 @@
 ################################
 library(qvalue)
 library(ggplot2)
+library(grid)
 library(gridExtra)
 library(R.utils)
 
@@ -76,6 +77,20 @@ for (subt in subtype) {
                             legend.title = element_text(size = rel(4.7)),
                             plot.margin = unit(c(1.2, 2, 2, 1.5), 'cm'))
     
+    # Get information about titles
+    if (subt == 'Basal') {
+      subtype_name <- 'Basal-like'
+    } else {
+      subtype_name <- subt
+    }
+    
+    if (sta == 'low') {
+      stage_name <- 'Early'
+    } else {
+      stage_name <- 'Late'
+    }
+    
+    
     # Store the plots to then arrange them on a grid to save as png
     # Unadjusted Plot
     un <- ggplot(unadjusted, aes(as.numeric(paste(unadjusted[ ,3])), 
@@ -84,8 +99,7 @@ for (subt in subtype) {
       scale_color_gradient2(low = "blue", mid = "grey", high = "red") + 
       labs(list(x = "Beta Coefficient", 
                 y = "-log10 p Value", 
-                title = paste("Unadjusted\n", subt, "-", 
-                              capitalize(sta), "Stage"), 
+                title = paste("Unadjusted\n", subtype_name, "-", stage_name), 
                 color = "Delta")) + 
       geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
       geom_hline(yintercept = qcut2, color = "black", lintetype = "dashed", size = 1.8) +
@@ -98,8 +112,7 @@ for (subt in subtype) {
       scale_color_gradient2(low = "blue", mid = "grey", high = "red") + 
       labs(list(x = "Beta Coefficient", 
                 y = "-log10 p Value", 
-                title = paste("Reference Free Adjusted\n", subt, "-",  
-                              capitalize(sta), "Stage"), 
+                title = paste("Reference Free Adjusted\n", subtype_name, "-", stage_name), 
                 color = "Delta")) + 
       geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
       geom_hline(yintercept = qcut2, acolor = "black", lintetype = "dashed", size = 1.8) +
@@ -112,14 +125,13 @@ for (subt in subtype) {
       scale_color_gradient2(low = "blue", mid="grey", high = "red") + 
       labs(list(x = "Beta Coefficient", 
                 y = "-log10 p Value", 
-                title = paste("Reference Free Adjusted \n", subt, "-",
-                              capitalize(sta), "(Resized)"), 
+                title = paste("Adjusted (Resized)\n", subtype_name, "-", stage_name), 
                 color = "Delta")) + 
       geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
       geom_hline(yintercept = qcut2, acolor = "black", lintetype = "dashed", size = 1.8) +
       xlim((-1 * maxX), maxX) + ylim(0, maxY1) + overall_theme
     
-    png(paste("II.RefFreeEWAS/Figures/", subt, "_", sta, "_volcano.png", sep = ""), 
+    png(paste("II.RefFreeEWAS/Figures/", subtype_name, "_", stage_name, "_volcano.png", sep = ""), 
         width = 4000, height = 1800)
     grid.arrange(un, ad, ad1, ncol = 3, nrow = 1)
     dev.off()
