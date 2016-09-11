@@ -15,7 +15,7 @@
 #####################################################################
 
 # Install R Packages
-R --no-save < INSTALL.R
+Rscript INSTALL.R
 
 ####################
 # Step I: Data Processing
