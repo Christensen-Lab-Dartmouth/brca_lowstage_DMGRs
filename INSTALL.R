@@ -1,31 +1,37 @@
-#####################################################################
-# ~~~~~~~~~~~~~~~~~~
-# Tumor subtype and cell type independent DNA methylation alterations 
-# associated with stage progression in invasive breast carcinoma 
-# ~~~~~~~~~~~~~~~~~~
+# Gregory Way 2016
 #
-# Way, G., Johnson, K., Christensen, B. 2015
+# INSTALL.R
 #
-# Run This script to install all the R libraries required to run the
-# analysis pipeline.
-#####################################################################
+# USAGE:
+# Run to install all required R libraries: "Rscript INSTALL.R"
 
-#####################
-# CRAN libraries
-#####################
+library("methods")
+
+mirror <- 'http://cran.us.r-project.org'
+install.packages("checkpoint", repos = mirror)
+
+library("checkpoint")
+
+dir.create(".checkpoint")
+checkpoint("2016-09-01", checkpointLocation = ".")
+
+# CRAN
 cran <- c("plyr", "reshape2", "ggplot2", "qvalue", "gridExtra", "readr", "Hmisc",
           "VennDiagram")
 install.packages(cran, repos='http://cran.us.r-project.org')
 
-#####################
-# Bioconductor libraries
-#####################
-#First, install bioconductor
+# Bioconductor
 source("http://bioconductor.org/biocLite.R")
-biocLite()
 
-bioC <- c("minfi", "IlluminaHumanMethylation450kmanifest", "IlluminaHumanMethylation450kanno.ilmn12.hg19",
-          "RefFreeEWAS", "isva", "limma", "Homo.sapiens", "Gviz", "GEOquery")
+bioC <- c("minfi",
+	  "IlluminaHumanMethylation450kmanifest",
+	  "IlluminaHumanMethylation450kanno.ilmn12.hg19",
+          "RefFreeEWAS",
+	  "isva",
+	  "limma",
+	  "Homo.sapiens",
+	  "Gviz",
+	  "GEOquery",
+	  "qvalue")
 
-biocLite(bioC)
-
+biocLite(bioC, suppressUpdates = TRUE)
