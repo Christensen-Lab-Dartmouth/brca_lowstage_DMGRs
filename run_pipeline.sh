@@ -20,23 +20,14 @@ Rscript INSTALL.R
 ####################
 # Step I: Data Processing
 ####################
-# Data can be downloaded from TCGA
-# https://tcga-data.nci.nih.gov/tcga/dataAccessMatrix.htm
+# Download archived data (https://zenodo.org/record/153930)
+bash download_data.sh
 
-#~~~~GET DATA
-# Data Type: DNA Methylation; Batch Number: All; Data Level: Level 1
-# Availibility: Available; Preservation: All; Center/Platform: JHU_USC (HumanMethylation450)
-# Access date: March 2015
-
-# Download Clinical Data from UCSC Cancer Genome Browser: 
-# https://genome-cancer.ucsc.edu/proj/site/hgHeatmap/
-
-# NOTE: It is important to place the IDAT files and the Clinical data matrix in the same folder
-IDAT_loc="../../Documents/mdata/TCGAbreast_idat/" # Place download folder location here
+IDAT_folder="I.Data_Processing/Data/TCGA_BRCA_IDAT/"
 
 #~~~~~PREPROCESS DATA
 # Run preprocessing script (if third argument is "summary", then the script will output a processing summary)
-R --no-save --args "I.Data_Processing/Data/TCGA_BRCA" $IDAT_loc "nosummary" < I.Data_Processing/Scripts/A.preprocess_minfi.R
+R --no-save --args "I.Data_Processing/Data/TCGA_BRCA" $IDAT_folder "nosummary" < I.Data_Processing/Scripts/A.preprocess_minfi.R
 
 # Subset data to spectific subtypes; tumor adjacent samples are included in all subsets
 R --no-save --args PAM50.RNAseq Basal Her2 LumA LumB Normal < I.Data_Processing/Scripts/B.subsetBetas.R
