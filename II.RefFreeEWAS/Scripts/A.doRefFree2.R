@@ -73,44 +73,5 @@ file = paste(subtype, stage, "_TCGA-BRCA", sep = "")
 cat(file, "\n")
 returnList <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
 
-################################
-# Extract Results
-################################
-results <- data.frame(returnList[[2]])
-
-adj.q <- qvalue(results[ ,3])
-unadj.q <- qvalue(results[ ,4])
-
-# Prepare dataframe for export
-adjusted <- cbind(adj.q$pvalues, adj.q$qvalues, results[ ,1])
-unadjusted <- cbind(unadj.q$pvalues, unadj.q$qvalues, results[ ,2])
-
-# Name the rows and columns for each model
-rownames(adjusted) <- rownames(unadjusted) <- rownames(beta2)
-colnames(adjusted) <- colnames(unadjusted) <- c("pvalues", "qvalues", "beta")
-
-# print out summary of the adjusted and unadjusted results
-summary(adj.q)
-summary(unadj.q)
-
-# Extract deltas
-deltas <- results[ ,5:6]
-rownames(deltas) <- rownames(beta2)
-colnames(deltas) <- c("Delta", "pvDelta")
-
-# Get the custom filename
-f.name <- paste("II.RefFreeEWAS/Data/", subtype, "_", stage, sep = "")
-
-# write the adjusted, unadjusted, and the deltas values to file 
-write.table(adjusted, file = paste(f.name, "_qvalues_adjusted.csv", sep = ""), sep = ",")
-write.table(unadjusted, file = paste(f.name, "_qvalues_unadjusted.csv", sep = ""), sep = ",")
-write.table(deltas, file = paste(f.name, "_delta.csv", sep = ""), sep = ",")
-
-################################
-# Extract Dimensionality Estimates
-################################
-string <- c(subtype, stage, returnList[[3]], n, bootstraps)
-names(string) <- c("Subtype", "Stage", "Dimensionality", "n", "bootstraps")
-
-write.table(t(string), file = paste("II.RefFreeEWAS/Data/dimension/", subtype, "_", stage, "_dim.txt", sep = ""), 
+write.table(returnlist[2], file = paste("II.RefFreeEWAS/Data/dimension/", subtype, "_", stage, "_RefFree.csv", sep = ""), 
             row.names = F, sep = ",")
