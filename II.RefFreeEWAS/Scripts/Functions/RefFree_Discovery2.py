@@ -23,4 +23,4 @@ bootstraps = 1
 
 for i in subtypes:
 	for j in stages:
-		os.system('R --no-save --args ' + bootstraps + ' ' + j + ' ' + i + ' < II.RefFreeEWAS/Scripts/A.doRefFree2.R')
+		os.system('R --no-save --args '+bootstraps+' '+j+' '+i+' < II.RefFreeEWAS/Scripts/A.doRefFree2.R')
