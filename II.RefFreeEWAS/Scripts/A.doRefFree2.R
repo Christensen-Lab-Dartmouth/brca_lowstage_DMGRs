@@ -71,7 +71,10 @@ cat("stage: ", stage, "\n")
 cat("bootstraps: ", bootstraps, "\n")
 file = paste(subtype, stage, "_TCGA-BRCA", sep = "")
 cat(file, "\n")
-returnList <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
+returnlist <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
 
 write.table(returnlist[2], file = paste("II.RefFreeEWAS/Data/dimension/", subtype, "_", stage, "_RefFree.csv", sep = ""), 
             row.names = F, sep = ",")
+
+
+
