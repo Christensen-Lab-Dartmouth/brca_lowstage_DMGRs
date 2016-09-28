@@ -18,8 +18,8 @@ sys.path.insert(0, 'I.Data_Processing/Scripts/Functions')
 
 subtypes = ['Basal', 'Her2', 'LumA', 'LumB', 'Normal']
 stages = ['low', 'high']
-# bootstraps = 1000
-bootstraps = 1
+bootstraps = 1000
+# bootstraps = 1
 
 for i in subtypes:
 	for j in stages:
