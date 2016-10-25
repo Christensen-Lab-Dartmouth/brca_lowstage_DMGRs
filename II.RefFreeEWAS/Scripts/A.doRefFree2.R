@@ -74,7 +74,7 @@ cat(file, "\n")
 returnlist <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
 
 save(returnlist, 
-     file=paste("II.RefFreeEWAS/Data/dimension/", subtype, "_", stage, "_RefFree2.0List_30Sept2016.RData", sep = ""), 
+     file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
      compress=TRUE)
 
 
