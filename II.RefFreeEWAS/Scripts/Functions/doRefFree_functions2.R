@@ -45,11 +45,11 @@ customRefFree <- function (covariates, betas, age = T, findRMT = T, bootstraps =
         # Komen_Initialized = RefFreeCellMixInitialize(Betas_Komen, K=5)
         
         # Step 1 - 2: Alternate fixing Mu and Omega by iterating from 2 to 10 (Kmax) cell types
-        DMGR_RefFree_Array <- RefFreeCellMixArray(newBeta, Klist=3:10, iters=15)
+        DMGR_RefFree_Array <- RefFreeCellMixArray(newBeta, Klist=3:10, iters=25)
         # DMGR_RefFree_Array <- RefFreeCellMixArray(newBeta, Klist=2, iters=2)
         
         # Step 3: Bootstrap method for determining the optimal number of Classes K
-        RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=100, bootstrapIterations=bootstraps)
+        RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=1000, bootstrapIterations=bootstraps)
         
         # Save Results
         # save(list=c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
