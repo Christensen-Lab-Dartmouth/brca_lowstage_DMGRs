@@ -72,36 +72,23 @@ cat("bootstraps: ", bootstraps, "\n")
 file = paste(subtype, stage, "_TCGA-BRCA", sep = "")
 cat(file, "\n")
 
-# subset betas
-newBeta <- beta2[ ,rownames(stageCov)]
-
-# Step 1 - 2: Alternate fixing Mu and Omega by iterating from 2 to 10 (Kmax) cell types
-DMGR_RefFree_Array <- RefFreeCellMixArray(newBeta, Klist=3:10, iters=25)
-
-# Step 3: Bootstrap method for determining the optimal number of Classes K
-RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=1000, bootstrapIterations=bootstraps)
-
-# Save the results
-save(list = c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
-           file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
-           compress=TRUE)
-
-
-# returnlist <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
+# # subset betas
+# newBeta <- beta2[ ,rownames(stageCov)]
 # 
-# save(list = returnlist, 
-#      file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
-#      compress=TRUE)
-
-## This was moved to CustomRefFree function
-# save(list = returnlist, 
-#      file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
-#      compress=TRUE)
-
-
-# write.table(returnlist[1], file = paste("II.RefFreeEWAS/Data/dimension/", subtype, "_", stage, "_RefFreeArray.csv", sep = ""), 
-#             row.names = F, sep = ",")
+# # Step 1 - 2: Alternate fixing Mu and Omega by iterating from 2 to 10 (Kmax) cell types
+# DMGR_RefFree_Array <- RefFreeCellMixArray(newBeta, Klist=3:10, iters=25)
 # 
-# write.table(returnlist[2], file = paste("II.RefFreeEWAS/Data/dimension/", subtype, "_", stage, "_RefFreeBoot.csv", sep = ""), 
-#             row.names = F, sep = ",")
+# # Step 3: Bootstrap method for determining the optimal number of Classes K
+# RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=1000, bootstrapIterations=bootstraps)
+# 
+# # Save the results
+# save(list = c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
+#            file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
+#            compress=TRUE)
 
+
+returnlist <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
+
+save(list = returnlist, 
+     file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
+     compress=TRUE)
