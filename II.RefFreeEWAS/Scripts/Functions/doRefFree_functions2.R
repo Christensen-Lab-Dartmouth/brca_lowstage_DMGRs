@@ -51,12 +51,11 @@ customRefFree <- function (covariates, betas, age = T, findRMT = T, bootstraps =
         # Step 3: Bootstrap method for determining the optimal number of Classes K
         RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=1000, bootstrapIterations=bootstraps)
         
-        # Save Results
-        # save(list=c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
-             # file="RefFree2-DMGR-27Sept2016.RData", compress=TRUE)
+        # Get the list ready to return - Possibly remove if the following code runs
         
-        # Get the list ready to return
-        returnlist <- list(DMGR_RefFree_Array, RefFree_DMGR_Boots)
+        returnlist <- c("DMGR_RefFree_Array", "RefFree_DMGR_Boots")
         return(returnlist)
+        
+        
 }
 
