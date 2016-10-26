@@ -88,7 +88,9 @@ cat(file, "\n")
 
 
 returnlist <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
+DMGR_RefFree_Array <- returnlist[[1]]
+RefFree_DMGR_Boots <- returnlist[[2]]
 
-save(list = returnlist, 
+save(list = c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
      file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
      compress=TRUE)
