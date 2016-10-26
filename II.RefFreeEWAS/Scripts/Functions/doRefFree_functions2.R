@@ -51,8 +51,7 @@ customRefFree <- function (covariates, betas, age = T, findRMT = T, bootstraps =
         RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=1000, bootstrapIterations=bootstraps)
         
         # Get the list ready to return - Possibly remove if the following code runs
-        
-        returnlist <- c("DMGR_RefFree_Array", "RefFree_DMGR_Boots")
+        returnlist <- list(DMGR_RefFree_Array, RefFree_DMGR_Boots)
         return(returnlist)
         
         
