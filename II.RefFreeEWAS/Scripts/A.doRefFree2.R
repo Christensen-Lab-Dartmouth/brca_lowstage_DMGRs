@@ -23,7 +23,7 @@ set.seed(123)
 # Load Libraries
 ################################
 library(RefFreeEWAS)
-library(RnBeads)
+# library(RnBeads)
 library(readr)
 library(isva)
 library(ggplot2)
