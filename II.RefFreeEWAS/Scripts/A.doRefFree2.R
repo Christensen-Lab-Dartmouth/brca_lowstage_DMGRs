@@ -28,7 +28,7 @@ library(ggplot2)
 library(reshape)
 library(gridExtra)
 library(qvalue)
-source("II.RefFreeEWAS/Scripts/Functions/doRefFree_functions.R")
+source("II.RefFreeEWAS/Scripts/Functions/doRefFree_functions2.R")
 
 ################################
 # Load and Subset Data
@@ -94,3 +94,7 @@ RefFree_DMGR_Boots <- returnlist[[2]]
 save(list = c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
      file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
      compress=TRUE)
+
+
+
+
