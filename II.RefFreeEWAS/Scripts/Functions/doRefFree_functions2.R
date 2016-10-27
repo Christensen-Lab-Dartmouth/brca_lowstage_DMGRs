@@ -39,7 +39,7 @@ customRefFree <- function (covariates, betas, age = T, findRMT = T, bootstraps =
                            save = F, iPOI = 2, k) {
         
         # subset betas
-        newBeta <- betas[ ,rownames(covariates)]
+        newBeta <- betas[ , rownames(covariates)]
         
         # Step 0: You can start with an intial estimate of M (Optional)
         # Komen_Initialized = RefFreeCellMixInitialize(Betas_Komen, K=5)

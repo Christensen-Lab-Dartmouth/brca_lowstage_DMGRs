@@ -23,6 +23,8 @@ set.seed(123)
 # Load Libraries
 ################################
 library(RefFreeEWAS)
+library(RnBeads)
+library(readr)
 library(isva)
 library(ggplot2)
 library(reshape)
@@ -72,28 +74,44 @@ cat("bootstraps: ", bootstraps, "\n")
 file = paste(subtype, stage, "_TCGA-BRCA", sep = "")
 cat(file, "\n")
 
-# # subset betas
-# newBeta <- beta2[ ,rownames(stageCov)]
-# 
-# # Step 1 - 2: Alternate fixing Mu and Omega by iterating from 2 to 10 (Kmax) cell types
-# DMGR_RefFree_Array <- RefFreeCellMixArray(newBeta, Klist=3:10, iters=25)
-# 
-# # Step 3: Bootstrap method for determining the optimal number of Classes K
-# RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array, newBeta, R=1000, bootstrapIterations=bootstraps)
-# 
-# # Save the results
-# save(list = c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
-#            file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
-#            compress=TRUE)
+# subset betas
+newBeta <- beta2[ ,rownames(stageCov)]
+newBeta <- data.matrix(newBeta)
+
+# Choose only the top 10,000 rows (i.e. those with the largest var)
+DMGR_Var <- apply(newBeta, 1, var)
+rankvar<-rank(-DMGR_Var)
+Y_shortened<-newBeta[rankvar<=10000,]
+
+# Step 1 - 2: Alternate fixing Mu and Omega by iterating from 2 to 10 (Kmax) cell types
+DMGR_RefFree_Array <- RefFreeCellMixArray(Y_shortened, Klist=2:10, iters=25)
+Y_shortened2<-Y_shortened
+sapply(DMGR_RefFree_Array,deviance,Y=Y_shortened)
+
+#Using the full betas plus the shortened most variable probes to infer the cell types
+DMGR_RefFree_Array2 <- RefFreeCellMixArray(newBeta, Klist=2:10, iters=25, Yfinal=Y_shortened2)
+sapply(DMGR_RefFree_Array2,deviance,Y=Y_shortened2)
+
+celprop<-DMGR_RefFree_Array2[[2]]$Omega
 
 
-returnlist <- customRefFree(covariates = stageCov, betas = beta2, bootstraps = bootstraps)
-DMGR_RefFree_Array <- returnlist[[1]]
-RefFree_DMGR_Boots <- returnlist[[2]]
+# Step 3: Bootstrap method for determining the optimal number of Classes K
+# May need to increase the number of bootstraps though?
+# R is the number of bootstrapped vectors by default is five, boots is the number of iterations, by default is five #1500 to obtain 0.001 p-value
+RefFree_DMGR_Boots = RefFreeCellMixArrayDevianceBoots(DMGR_RefFree_Array2, Y_shortened2, R=1500, bootstrapIterations=10)
 
-save(list = c("DMGR_RefFree_Array", "RefFree_DMGR_Boots"), 
+RefFree_DMGR_Boots
+RefFree_DMGR_Boots2<-RefFree_DMGR_Boots
+apply(RefFree_DMGR_Boots[-1,],2,mean,trim=0.25)
+which.min(apply(RefFree_DMGR_Boots[-1,],2,mean,trim=0.25))
+
+class(RefFree_DMGR_Boots)
+
+# Save Results
+save(DMGR_RefFree_Array, DMGR_RefFree_Array2, RefFree_DMGR_Boots,
      file=paste("/global/scratch/atitus/data/", subtype, "_", stage, "_RefFree2.0List_05Oct2016.RData", sep = ""), 
      compress=TRUE)
+
 
 
 
