@@ -20,6 +20,8 @@ subtypes = ['Basal', 'Her2', 'LumA', 'LumB', 'Normal']
 stages = ['low', 'high']
 bootstraps = 10
 
-for i in subtypes:
-	for j in stages:
-		os.system('R --no-save --args '+str(bootstraps)+' '+j+' '+i+' < II.RefFreeEWAS/Scripts/A.doRefFree2.R')
+# for i in subtypes:
+# 	for j in stages:
+# 		os.system('R --no-save --args '+str(bootstraps)+' '+j+' '+i+' < II.RefFreeEWAS/Scripts/A.doRefFree2.R')
+
+os.system('R --no-save --args ' + str(bootstraps) + ' low Basal ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
