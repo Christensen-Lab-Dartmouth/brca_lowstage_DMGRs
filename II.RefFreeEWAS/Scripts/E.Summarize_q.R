@@ -77,10 +77,6 @@ for (i in 1:length(QFileList)) {
 }
 
 
-
-
-
-
 rm(annotation, tmp, annoFirst, annoReg, f.location, files, i, j, name, qfile, QFileList, qfiles, use)
 ################################
 # Plot Various Q Value Cutoffs
