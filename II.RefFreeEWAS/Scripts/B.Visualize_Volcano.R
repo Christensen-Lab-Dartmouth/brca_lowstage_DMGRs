@@ -22,8 +22,7 @@ library(R.utils)
 ################################
 # Load Constants
 ################################
-#subtype <- c("Basal", "Her2", "LumA", "LumB", "Normal")
-subtype <- c("Basal", "Her2", "LumB", "Normal")
+subtype <- c("Basal", "Her2", "LumA", "LumB", "Normal")
 stage <- c("low", "high")
 
 # Loop over each subtype and stage combo to output volcano plots

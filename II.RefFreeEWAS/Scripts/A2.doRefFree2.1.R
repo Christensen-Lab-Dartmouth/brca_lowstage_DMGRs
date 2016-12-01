@@ -22,8 +22,8 @@ setwd(dir)
 #subtype <- "LumB"
 subtype <- "Normal"
 
-stage <- "high"
 #stage <- "low"
+stage <- "high"
 
 file_name <- paste('II.RefFreeEWAS/Data/RefFreeEWAS/', subtype, '_', stage, '_RefFree2.0List_05Oct2016.RData', sep = '')
 load(file_name)
@@ -36,20 +36,25 @@ which.min(apply(RefFree_DMGR_Boots[-1, ], 2, mean, trim=0.15))
 which.min(apply(RefFree_DMGR_Boots[-1, ], 2, mean, trim=0.25)) 
 which.min(apply(RefFree_DMGR_Boots[-1, ], 2, mean, trim=0.35)) 
 which.min(apply(RefFree_DMGR_Boots[-1, ], 2, mean, trim=0.45)) 
-# k <- 5 # Basal low
-# k <- 3 # Basal high
-# k <- 4 # Her2 high
-# k <- 5 # Her2 low
-# k <- 5 # LumA high
-# k <- 4 # LumB high
-# k <- 7 # LumB low
-# k <- 8 # Normal low
+#k <- 5 # Basal low
+#k <- 3 # Basal high
+#k <- 5 # Her2 low
+#k <- 4 # Her2 high
+#k <- 9 # LumA low
+#k <- 5 # LumA high
+#k <- 7 # LumB low
+#k <- 4 # LumB high
+#k <- 8 # Normal low
 k <- 7 # Normal high
 
 # Inspect the results
 head(DMGR_RefFree_Array2[[k-1]]$Mu)
 head(DMGR_RefFree_Array2[[k-1]]$Omega)
+
+png(paste('/Users/alexandertitus/Documents/brca_lowstage_DMGRs/II.RefFreeEWAS/Figures/k_distribution/', 
+          subtype, '_', stage, '_', 'k_estimate.png', sep = ''))
 boxplot(DMGR_RefFree_Array2[[k-1]]$Omega)
+dev.off()
 
 # Update the covariate file specific to this subset
 DMGR_RefFree_Array2[[k-1]]$Omega[DMGR_RefFree_Array2[[k-1]]$Omega < 0] = 0
@@ -63,7 +68,7 @@ DMGR_om <- DMGR_RefFree_Array2[[k-1]]$Omega
 # Drop one cell-type to avoid multi-collinearity
 DMGR_om <- DMGR_om[, 1:(k-1)]
 
-XX <- model.matrix(~sample.type, data = covariates)
+XX <- model.matrix(~sample.type + age.Dx, data = covariates)
 rownames(XX) <- covariates$Basename
 
 # Load betas

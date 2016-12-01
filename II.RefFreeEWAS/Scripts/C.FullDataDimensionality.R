@@ -29,7 +29,7 @@ betas[["sample_id"]] <- NULL
 
 # subset covariate file
 rownames(covariates) <- covariates$Basename
-covariates <- covariates[-1:-19, ]
+#covariates <- covariates[-1:-19, ]
 
 ################################
 # Run the dimensionality estimate
@@ -38,6 +38,7 @@ covariates <- covariates[-1:-19, ]
 mod <- model.matrix(~covariates$sample.type + covariates$age.Dx)
 
 # Subset beta file
+covariates <- covariates[-1:-19, ]
 newBeta <- betas[ ,rownames(covariates)]
 tempL <- as.matrix(newBeta[ , ])
 tempR <- solve(t(mod)%*%mod)
