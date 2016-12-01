@@ -16,8 +16,7 @@ library(plyr)
 ################################
 # Constants
 ################################
-#subtypes <- c("Basal", "Her2", "LumA", "LumB", "Normal")
-subtypes <- c("Basal", "Her2", "LumB", "Normal")
+subtypes <- c("Basal", "Her2", "LumA", "LumB", "Normal")
 stages <- c("low", "high")
 
 ################################
@@ -68,6 +67,7 @@ colnames(annotation)[ncol(annotation)] <- "GeneRegion"
 ################################
 use <- rownames(QFileList[[1]])
 AnnoQList <- list()
+
 for (i in 1:length(QFileList)) {
   # get the QFile ready to match to the annotation file
   tmp <- QFileList[[i]][match(annotation$TargetID, use), ]
@@ -75,6 +75,11 @@ for (i in 1:length(QFileList)) {
   AnnoQList[[i]] <- cbind(annotation, tmp)
   names(AnnoQList)[i] <- names(QFileList)[i]
 }
+
+
+
+
+
 
 rm(annotation, tmp, annoFirst, annoReg, f.location, files, i, j, name, qfile, QFileList, qfiles, use)
 ################################
