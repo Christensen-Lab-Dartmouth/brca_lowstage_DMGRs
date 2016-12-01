@@ -16,7 +16,8 @@ library(plyr)
 ################################
 # Constants
 ################################
-subtypes <- c("Basal", "Her2", "LumA", "LumB", "Normal")
+#subtypes <- c("Basal", "Her2", "LumA", "LumB", "Normal")
+subtypes <- c("Basal", "Her2", "LumB", "Normal")
 stages <- c("low", "high")
 
 ################################
@@ -111,6 +112,7 @@ for (i in 1:length(stages)) {
 # Extract Top 400 Overlapping Genes in Low Stage Overlaps
 ################################
 top <- findGoodQ(qcut = 0.1, AnnoQList, subtypes = subtypes[1:4], "low", returning = "All")
-genes <- laply(rownames(top), function(x){unlist(strsplit(x, " "))[1]})
+genes <- lapply(rownames(top), function(x){unlist(strsplit(x, " "))[1]})
 restrictTop <- unique(genes)[1:400]
 write.table(restrictTop, "II.RefFreeEWAS/Tables/Top400SimilarGenes.txt", sep = ",", row.names = F)
+

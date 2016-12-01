@@ -11,6 +11,8 @@
 ################################
 # Load Libraries
 ################################
+#install.packages("gridExtra")
+#install.packages("R.utils")
 library(qvalue)
 library(ggplot2)
 library(grid)
@@ -20,7 +22,8 @@ library(R.utils)
 ################################
 # Load Constants
 ################################
-subtype <- c("Basal", "Her2", "LumA", "LumB", "Normal")
+#subtype <- c("Basal", "Her2", "LumA", "LumB", "Normal")
+subtype <- c("Basal", "Her2", "LumB", "Normal")
 stage <- c("low", "high")
 
 # Loop over each subtype and stage combo to output volcano plots
@@ -101,8 +104,8 @@ for (subt in subtype) {
                 y = "-log10 p Value", 
                 title = paste("Unadjusted\n", subtype_name, "-", stage_name), 
                 color = "Delta")) + 
-      geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
-      geom_hline(yintercept = qcut2, color = "black", lintetype = "dashed", size = 1.8) +
+      geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
+      geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
       xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme
     
     # Adjusted plot
@@ -114,8 +117,8 @@ for (subt in subtype) {
                 y = "-log10 p Value", 
                 title = paste("Reference Free Adjusted\n", subtype_name, "-", stage_name), 
                 color = "Delta")) + 
-      geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
-      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "dashed", size = 1.8) +
+      geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
+      geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
       xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme
     
     # Adjusted plot with different max y value
@@ -127,8 +130,8 @@ for (subt in subtype) {
                 y = "-log10 p Value", 
                 title = paste("Adjusted (Resized)\n", subtype_name, "-", stage_name), 
                 color = "Delta")) + 
-      geom_hline(yintercept = qcut1, color = "red", lintetype = "dashed", size = 1.8) + 
-      geom_hline(yintercept = qcut2, acolor = "black", lintetype = "dashed", size = 1.8) +
+      geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
+      geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
       xlim((-1 * maxX), maxX) + ylim(0, maxY1) + overall_theme
     
     png(paste("II.RefFreeEWAS/Figures/", subtype_name, "_", stage_name, "_volcano.png", sep = ""), 
