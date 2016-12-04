@@ -13,4 +13,19 @@
 # R --no-save < I.Data_Processing/Scripts/D.DescribeTableI.R
 
 # Describe TCGA tumor purity estimates
-R --no-save < I.Data_Processing/Scripts/E.TumorPurity.R
+# R --no-save < I.Data_Processing/Scripts/E.TumorPurity.R
+
+####################
+# Step III: Identifying Differentially Methylated Gene Regions (DMGRs)
+####################
+# NOTE- This step was performed in the Discovery cluster at Dartmouth College
+python III.DMGR_analysis/Scripts/A.DMcg.R
+
+# Compare DMGRs within PAM50 across stage and across PAM50 within Stage (Output venn diagrams comparing overlaps) and low/high stage overlap tables
+R --no-save < III.DMGR_analysis/Scripts/B.DMGRcomparison.R
+
+# Perform Gene:Region Enrichment Test
+R --no-save < III.DMGR_analysis/Scripts/C.FisherExact_RegionEnrichment.R
+
+# Generate HeatMaps for all Gene:Regions and a heatmap in common to all low stage overlapping gene region associated CpGs
+R --no-save < III.DMR_analysis/Scripts/D.DMGRheatmap.R

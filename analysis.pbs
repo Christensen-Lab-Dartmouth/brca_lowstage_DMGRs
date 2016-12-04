@@ -17,6 +17,5 @@ cd $PBS_O_WORKDIR
 ##############################
 # Enter your code to run below
 ##############################
-# bash analysis.sh
-python II.RefFreeEWAS/Scripts/Functions/RefFree_Discovery2.py
-
+bash analysis.sh
+# python II.RefFreeEWAS/Scripts/Functions/RefFree_Discovery2.py
