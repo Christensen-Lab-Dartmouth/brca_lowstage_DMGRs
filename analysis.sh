@@ -28,4 +28,4 @@ R --no-save < III.DMGR_analysis/Scripts/A.DMcgs.R
 # R --no-save < III.DMGR_analysis/Scripts/C.FisherExact_RegionEnrichment.R
 
 # Generate HeatMaps for all Gene:Regions and a heatmap in common to all low stage overlapping gene region associated CpGs
-# R --no-save < III.DMR_analysis/Scripts/D.DMGRheatmap.R
+# R --no-save < III.DMGR_analysis/Scripts/D.DMGRheatmap.R
