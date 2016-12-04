@@ -43,8 +43,6 @@ colnames(annotation)[ncol(annotation)] <- "GeneRegion"
 ################################
 s <- c('low', 'high')
 t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
-model_stage <- s[1]
-model_subtype <- t[1]
 
 for (model_stage in s) {
   for (model_subtype in t) {
