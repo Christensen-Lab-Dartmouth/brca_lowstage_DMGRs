@@ -22,10 +22,10 @@
 R --no-save < III.DMGR_analysis/Scripts/A.DMcgs.R
 
 # Compare DMGRs within PAM50 across stage and across PAM50 within Stage (Output venn diagrams comparing overlaps) and low/high stage overlap tables
-R --no-save < III.DMGR_analysis/Scripts/B.DMGRcomparison.R
+# R --no-save < III.DMGR_analysis/Scripts/B.DMGRcomparison.R
 
 # Perform Gene:Region Enrichment Test
-R --no-save < III.DMGR_analysis/Scripts/C.FisherExact_RegionEnrichment.R
+# R --no-save < III.DMGR_analysis/Scripts/C.FisherExact_RegionEnrichment.R
 
 # Generate HeatMaps for all Gene:Regions and a heatmap in common to all low stage overlapping gene region associated CpGs
-R --no-save < III.DMR_analysis/Scripts/D.DMGRheatmap.R
+# R --no-save < III.DMR_analysis/Scripts/D.DMGRheatmap.R
