@@ -43,6 +43,8 @@ colnames(annotation)[ncol(annotation)] <- "GeneRegion"
 ################################
 s <- c('low', 'high')
 t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
+model_stage <- s[1]
+model_subtype <- t[1]
 
 for (model_stage in s) {
   for (model_subtype in t) {
@@ -62,8 +64,8 @@ for (model_stage in s) {
     
     # Load the file holding beta values corresponding to the specific subtype
     beta2 <- read_tsv(beta.file, col_names = T)
-    rownames(beta2) <- beta2[ ,1]
-    beta2 <- beta2[ ,-1]
+    rownames(beta2) <- beta2[['X1']]
+    beta2[ ,1] <- NULL
     
     # Subset the covariate data to only the samples in the beta file
     covariates <- covariates_full[intersect(rownames(covariates_full), colnames(beta2)), ]
