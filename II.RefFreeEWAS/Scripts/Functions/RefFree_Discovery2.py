@@ -25,10 +25,10 @@ bootstraps = 10
 # 		os.system('R --no-save --args '+str(bootstraps)+' '+j+' '+i+' < II.RefFreeEWAS/Scripts/A.doRefFree2.R')
 
 #os.system('R --no-save --args '+str(bootstraps)+' low Basal ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
-os.system('R --no-save --args '+str(bootstraps)+' high Basal ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
+#os.system('R --no-save --args '+str(bootstraps)+' high Basal ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
 #os.system('R --no-save --args '+str(bootstraps)+' low Her2 ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
 #os.system('R --no-save --args '+str(bootstraps)+' high Her2 ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
-#os.system('R --no-save --args '+str(bootstraps)+' low LumA ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
+os.system('R --no-save --args '+str(bootstraps)+' low LumA ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
 #os.system('R --no-save --args '+str(bootstraps)+' high LumA ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
 #os.system('R --no-save --args '+str(bootstraps)+' low LumB ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
 #os.system('R --no-save --args '+str(bootstraps)+' high LumB ' + '< II.RefFreeEWAS/Scripts/A.doRefFree2.R')
