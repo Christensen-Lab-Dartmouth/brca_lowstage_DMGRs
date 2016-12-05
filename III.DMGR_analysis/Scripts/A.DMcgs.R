@@ -41,8 +41,17 @@ colnames(annotation)[ncol(annotation)] <- "GeneRegion"
 ################################
 # Analysis
 ################################
-s <- c('low', 'high')
-t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
+#s <- c('low', 'high')
+#t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
+
+s <- c('low')
+#s <- c('high')
+
+t <- c('Basal')
+#t <- c('Her2')
+#t <- c('LumA')
+#t <- c('LumB')
+#t <- c(‘Normal')
 
 for (model_stage in s) {
   for (model_subtype in t) {
