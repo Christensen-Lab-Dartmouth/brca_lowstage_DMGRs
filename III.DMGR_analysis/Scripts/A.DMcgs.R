@@ -53,6 +53,9 @@ t <- c('Basal')
 #t <- c('LumB')
 #t <- c(‘Normal')
 
+model_stage <- s
+model_subtype <- t
+
 for (model_stage in s) {
   for (model_subtype in t) {
     args <- c(model_stage, model_subtype, "0.01")
@@ -90,35 +93,34 @@ for (model_stage in s) {
     q <- qvalList(beta = beta2, subtype = subtype, stage = stage, covariates = covariates, 
                   qvalcut = qvalcut, filelist = "II.RefFreeEWAS/Data/")
     
-    ################################
-    # Subset and Recode Annotation File
-    ################################
     # This loop will combine q values with annotation cgs and gene regions
     anno.sub <- list()
     for (i in 1:length(q[[1]])) {
+
       if (nrow(q[[1]][[i]]) != 0) {
         # Extract the q value information
         frame <- q[[1]][[i]]
-        
+
         # name it
         frame <- cbind(rownames(frame), frame)
-        
+
         # subset the annotation file to only those with significant q values
         sub <- annotation[annotation$TargetID %in% rownames(frame), ]
-        
+
         # only consider cpgs that have gene information
         sub <- sub[sub[ , 12] != "", ]
-        
+
         # subset q value info
         frame.sub <- frame[match(sub$TargetID, rownames(frame)), ]
-        
+
         # combine q value info with annotation
         anno.sub[[i]] <- cbind(sub, frame.sub)
         names(anno.sub)[i] <- names(q[[1]])[i]
-        
+
       } else {
         cat("No Significant q value cgs")
       }
+
     }
     
     ################################
