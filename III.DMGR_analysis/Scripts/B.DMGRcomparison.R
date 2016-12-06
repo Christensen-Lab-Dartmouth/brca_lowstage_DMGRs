@@ -89,7 +89,8 @@ covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", ro
 # the index where the gene regions are held in the annotation file
 gene_region_ind <- 1
 ucsc_ind <- 2
-subtypes <- c("Basal", "Her2", "LumA", "LumB")
+#subtypes <- c("Basal", "Her2", "LumA", "LumB")
+subtypes <- c("Basal")
 
 ################################
 # Within Subtype Comparison
@@ -169,7 +170,9 @@ for (i in 1:length(subtypes)) {
   rownames(sumModel_ucsc) <- ucsc
   colnames(sumModel) <- colnames(sumModel_ucsc) <- c(paste(subtypes[i], "high", sep = "_"), 
                                                      paste(subtypes[i], "low", sep = "_"))
+   
   
+
   # store info in the summary model list  
   summaryModelList[[i]] <- sumModel
   summaryModelList_ucsc[[i]] <- sumModel_ucsc
