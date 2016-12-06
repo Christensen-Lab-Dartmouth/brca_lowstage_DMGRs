@@ -277,7 +277,8 @@ for (i in 1:length(MasterList)) {
   
   builder <- c()
   for (j in 1:length(MasterList)) {
-    tmp <- length(intersect(MasterList[[i]][[1]][ ,ind], MasterList[[j]][[1]][ ,ind]))
+    #tmp <- length(intersect(MasterList[[i]][[1]][ ,ind], MasterList[[j]][[1]][ ,ind]))
+    tmp <- length(intersect(MasterList[[i]][[1]][ ,gene_region_ind], MasterList[[j]][[1]][ ,gene_region_ind]))
     builder <- c(builder, tmp)
   }
   Intersections <- rbind(Intersections, builder)
@@ -292,7 +293,8 @@ for (i in 1:length(MasterList)) {
   
   builder <- c()
   for (j in 1:length(MasterList)) {
-    tmp <- length(intersect(MasterList[[i]][[2]][ ,ind], MasterList[[j]][[2]][ ,ind]))
+    #tmp <- length(intersect(MasterList[[i]][[2]][ ,ind], MasterList[[j]][[2]][ ,ind]))
+    tmp <- length(intersect(MasterList[[i]][[2]][ ,gene_region_ind], MasterList[[j]][[2]][ ,gene_region_ind]))
     builder <- c(builder, tmp)
   }
   
@@ -310,7 +312,8 @@ for (k in 1:length(stage)) {
   # initialize a venn matrix to get ready for overlaps 
   Venn <- matrix(NA, nrow = length(TotalRegions), ncol = length(subtypes))
   rownames(Venn) <- TotalRegions
-  colnames(Venn) <- subtypes[1:4]
+  #colnames(Venn) <- subtypes[1:4]
+  colnames(Venn) <- subtypes[1]
   for (i in 1:length(MasterList)) {
     vector <- c()
     for (j in 1:length(TotalRegions)) {
@@ -335,7 +338,7 @@ for (k in 1:length(stage)) {
                                      'Luminal B' = lumb_venn,
                                      'Her2' = her2_venn,
                                      'Luminal A' = luma_venn),
-                            filename = paste("III.DMGR_analysis/Figures/Venn_", stage[k], 
+                            filename = paste("III.DMGR_analysis/Figures/Venn_", stage[k],
                                              "_gene_region.png", sep = ''),
                             height = 3000, width = 2150,
                             fill = c("red", "cyan", "pink", "blue"),
