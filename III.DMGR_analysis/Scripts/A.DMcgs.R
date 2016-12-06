@@ -53,8 +53,9 @@ t <- c('Basal')
 #t <- c('LumB')
 #t <- c(‘Normal')
 
-model_stage <- s
-model_subtype <- t
+# for debugging only 
+#model_stage <- s
+#model_subtype <- t
 
 for (model_stage in s) {
   for (model_subtype in t) {
@@ -76,6 +77,7 @@ for (model_stage in s) {
     beta2 <- read_tsv(beta.file, col_names = T)
     rownames(beta2) <- beta2[['X1']]
     beta2[ ,1] <- NULL
+    beta2 <- as.data.frame(beta2)
     
     # Subset the covariate data to only the samples in the beta file
     covariates <- covariates_full[intersect(rownames(covariates_full), colnames(beta2)), ]
@@ -129,7 +131,9 @@ for (model_stage in s) {
     # Apply the functions in "II.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" 
     # to output specific matrix and write to file
     for (j in 1:length(anno.sub)) {
-      
+      # for debugging only
+      #anno.sub[[j]] <- anno.sub[[j]][1:100, ]
+                  
       # Subset Beta File
       betaSub <- beta2[unique(anno.sub[[j]]$TargetID), rownames(q[[2]])]
       
