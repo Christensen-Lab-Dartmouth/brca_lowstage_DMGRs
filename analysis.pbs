@@ -7,7 +7,7 @@
 #PBS -A Amos
 # Resources to reserve
 #PBS -l nodes=1:ppn=1
-#PBS -l walltime=12:00:00
+#PBS -l walltime=240:00:00
 # Send email to this address
 #PBS -M Alexander.J.Titus.GR@Dartmouth.edu
 # When to send defined here
