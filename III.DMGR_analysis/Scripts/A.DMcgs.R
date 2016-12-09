@@ -50,8 +50,8 @@ s <- c('high')
 #t <- c('Basal')
 #t <- c('Her2')
 #t <- c('LumA')
-#t <- c('LumB')
-t <- c('Normal')
+t <- c('LumB')
+#t <- c('Normal')
 
 # for debugging only 
 #model_stage <- s
