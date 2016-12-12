@@ -44,13 +44,13 @@ colnames(annotation)[ncol(annotation)] <- "GeneRegion"
 #s <- c('low', 'high')
 #t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
 
-#s <- c('low')
-s <- c('high')
+s <- c('low')
+#s <- c('high')
 
 #t <- c('Basal')
-#t <- c('Her2')
+t <- c('Her2')
 #t <- c('LumA')
-t <- c('LumB')
+#t <- c('LumB')
 #t <- c('Normal')
 
 # for debugging only 
