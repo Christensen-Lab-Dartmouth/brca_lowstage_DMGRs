@@ -12,6 +12,9 @@
 ################################
 # Load Libraries
 ################################
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("Gviz")
+#biocLite("Homo.sapiens")
 library(Gviz)
 library(Homo.sapiens)
 library(readr)
@@ -89,7 +92,8 @@ PlotGvizTracks <- function (gene, toggle = c(100,00)) {
 # Load Data
 ################################
 # Load extended annotation file. This file does not ignore multiple genes for a single cpg
-annotation <- read_csv("I.Data_Processing/Files/HumanMethylation450_15017482_v.1.1.csv")
+annotation <- read_csv("I.Data_Processing/Files/HumanMethylation450K_Annotation_File.csv", skip = 7)
+annotation <- as.data.frame(annotation)
 
 # Load Common Overlaps
 CommonOverlaps <- read.csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_FullAnnotation_extended.csv", 

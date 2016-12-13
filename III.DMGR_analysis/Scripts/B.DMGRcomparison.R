@@ -13,7 +13,8 @@
 # Load Libraries
 ################################
 #install.packages('VennDiagram')
-#install.packages('limma')
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("limma")
 library(limma)
 library(VennDiagram)
 
@@ -89,8 +90,7 @@ covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", ro
 # the index where the gene regions are held in the annotation file
 gene_region_ind <- 1
 ucsc_ind <- 2
-#subtypes <- c("Basal", "Her2", "LumA", "LumB")
-subtypes <- c("Basal")
+subtypes <- c("Basal", "Her2", "LumA", "LumB")
 
 ################################
 # Within Subtype Comparison
@@ -312,8 +312,7 @@ for (k in 1:length(stage)) {
   # initialize a venn matrix to get ready for overlaps 
   Venn <- matrix(NA, nrow = length(TotalRegions), ncol = length(subtypes))
   rownames(Venn) <- TotalRegions
-  #colnames(Venn) <- subtypes[1:4]
-  colnames(Venn) <- subtypes[1]
+  colnames(Venn) <- subtypes[1:4]
   for (i in 1:length(MasterList)) {
     vector <- c()
     for (j in 1:length(TotalRegions)) {
@@ -416,7 +415,8 @@ for (i in 1:(length(MasterList))) {
 
 # Name the elements of the common summary
 commonSummary <- cbind(commonSummary, denom)
-rownames(commonSummary) <- tmp[,1]
+#rownames(commonSummary) <- tmp[,1]
+rownames(commonSummary) <- MasterList[[1]][[2]][MasterList[[1]][[2]][, gene_region_ind] %in% CommonLow, ][,1]
 colnames(commonSummary) <- c("Basal_sign", "Basal_q", "Basal_B", "Basal_D", "Basal_cpgs",
                              "Her2_sign", "Her2_q", "Her2_B", "Her2_D", "Her2_cpgs", 
                              "LumA_sign", "LumA_q", "LumA_B", "LumA_D","LumA_cpgs", 
@@ -440,23 +440,25 @@ write.table(commonSummary, file = "III.DMGR_analysis/Tables/commonLowStageOverla
 ################################
 # Are these genes also present and where in high stage samples?
 commonSummaryHigh <- c()
-for (i in 1:(length(MasterList) - 1)) {
+#for (i in 1:(length(MasterList) - 1)) {
+for (i in 1:(length(MasterList))) {
   #Subset the Master list to high stage models
-  tmp1 <- MasterList[[i]][[1]][MasterList[[i]][[1]][ ,ind] %in% CommonLow,]
+  tmp1 <- MasterList[[i]][[1]][MasterList[[i]][[1]][ ,gene_region_ind] %in% CommonLow,]
   
   # Extract information from the Master List
-  what <- tmp1[match(CommonLow, tmp1[,ind]),]
+  what <- tmp1[match(CommonLow, tmp1[,gene_region_ind]),]
   Q <- what$medQval
   B <- what$medBetaCoef
   D <- what$medDelta
   Sign <- what$Sign
   cgs <- what$cpgs
-  demon <- what$denominator
+  denom <- what$denominator
   commonSummaryHigh <- cbind(commonSummaryHigh, Sign, Q, B, D, cgs)
 }
 
 commonSummaryHigh <- cbind(commonSummaryHigh, denom)
-rownames(commonSummaryHigh) <- tmp[,1]
+#rownames(commonSummaryHigh) <- tmp[,1]
+rownames(commonSummaryHigh) <- MasterList[[1]][[2]][MasterList[[1]][[2]][ ,gene_region_ind] %in% CommonLow,][,1]
 colnames(commonSummaryHigh) <- colnames(commonSummary)[c(-22, -23)]
 
 write.table(commonSummaryHigh, file = "III.DMGR_analysis/Tables/commonLowStageOverlaps_HighStage.csv", sep = ",", row.names = T, col.names = NA)
@@ -465,6 +467,6 @@ write.table(commonSummaryHigh, file = "III.DMGR_analysis/Tables/commonLowStageOv
 # Specifically Investigating Overlapping UCSC Regions associated with Low Stage
 ################################
 #These are the regions in common for low stage (across all four PAM50 subtypes)
-Crownames(VennLabels_ucsc[[2]][VennLabels_ucsc[[2]][ ,1] == 1 & VennLabels_ucsc[[2]][ ,2] == 1 & 
+rownames(VennLabels_ucsc[[2]][VennLabels_ucsc[[2]][ ,1] == 1 & VennLabels_ucsc[[2]][ ,2] == 1 & 
                                VennLabels_ucsc[[2]][ ,3] == 1 & VennLabels_ucsc[[2]][ ,4] ==  1, ])
 

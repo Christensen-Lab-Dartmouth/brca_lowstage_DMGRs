@@ -21,6 +21,8 @@ dir.create(destination, recursive = T, showWarnings = F)
 ################################
 # Load Libraries
 ################################
+source("http://bioconductor.org/biocLite.R")
+biocLite("GEOquery")
 library(GEOquery)
 
 ################################

@@ -28,14 +28,21 @@ subtypes <-  c("Basal", "Her2", "LumA", "LumB", "Normal")
 
 # Load Betas
 Betas <- read_tsv("I.Data_Processing/Data/TCGA_BRCA_Betas.tsv")
-rownames(Betas) <- Betas[ ,1]
-Betas <- Betas[ ,-1]
+rownames(Betas) <- Betas[[1]]
+Betas[[1]] <- NULL
+Betas <- as.data.frame(Betas)
 
 # Load TCGA BRCA Normal RNAseq Data
 NormalRNAseq <- read_tsv("IV.Genomic_analysis/Data/unc.edu_BRCA_IlluminaHiSeq_RNASeqV2.geneExp.whitelist_normal")
-rownames(NormalRNAseq) <- NormalRNAseq[, 1]
+
+rownames(NormalRNAseq) <- NormalRNAseq[[1]]
+NormalRNAseq[[1]] <- NULL
+NormalRNAseq <- as.data.frame(NormalRNAseq)
+
 NormalRNAseq <- NormalRNAseq[-grep("[?]", laply(rownames(NormalRNAseq), 
                                                 function (x) {unlist(strsplit(x, "[|]"))[1]})), ]
+
+
 NormalRNAseq <- NormalRNAseq[-grep("SLC35E2", laply(rownames(NormalRNAseq), 
                                                     function (x) {unlist(strsplit(x, "[|]"))[1]})), ]
 colnames(NormalRNAseq) <- substr(colnames(NormalRNAseq), 1, 15)
@@ -43,9 +50,8 @@ colnames(NormalRNAseq) <- gsub("-", ".", colnames(NormalRNAseq))
 rownames(NormalRNAseq) <- laply(rownames(NormalRNAseq), function (x) {unlist(strsplit(x, "[|]"))[1]})
 
 # Load annotation file
-annotation <- read.table("I.Data_Processing/Files/HumanMethylation450_15017482_v.1.1.csv", 
-                         stringsAsFactors = F, row.names = 1, header = T, sep = ",", nrows = 500000, 
-                         comment.char = "")[ ,-1]
+annotation <- read_csv("I.Data_Processing/Files/HumanMethylation450K_Annotation_File.csv", skip = 7)
+annotation <- as.data.frame(annotation)
 
 # Load Covariates
 covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1, 
@@ -74,7 +80,6 @@ covariates <- covariates[covariates$pathologic_stage == "low" | covariates$patho
 
 # Subset Betas to those samples with PAM50 data and stage of interest
 Betas <- Betas[ ,rownames(covariates)]
-Betas <- as.data.frame(Betas)
 
 ################################
 # Run Function
@@ -102,7 +107,8 @@ alpha <- 0.05 / (6 * num_unique_cpgs)
 significantCor <- c()
 for (gene in 1:length(Genes)) {
   # Extract the CGs associated with a specific gene
-  CpGs <- unique(ExtractCommonCGs(Genes[gene], CommonOverlaps))
+  #CpGs <- unique(ExtractCommonCGs(Genes[gene], CommonOverlaps))
+  CpGs <- unique(ExtractCommonCGs(rownames(CommonOverlaps)[gene], CommonOverlaps))
   
   for (i in 1:length(CpGs)) {
     # Create and save all of the plots for each combination of CpGs and Genes

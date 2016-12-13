@@ -107,7 +107,7 @@ methSeqPlot <- function (gene, betas, cg, covariates, stages, subtypes, normalEx
     # Add Normal sample correlations, probabilities and sample size
     correlations[5, 1] <- cor(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method)
     pr <- cor.test(as.numeric(paste(subset$RNAseq)), as.numeric(paste(subset$Beta)), method = method)
-    probability[5, 1] <- pr$p.value, 2
+    probability[5, 1] <- pr$p.value#, 2
     samplesize[5, 1] <- nrow(subset)
     
     allTumor <- plotFrame[plotFrame$Stage != "Normal", ]
