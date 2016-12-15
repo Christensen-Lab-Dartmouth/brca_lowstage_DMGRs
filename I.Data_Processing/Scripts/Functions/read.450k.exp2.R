@@ -15,7 +15,7 @@ read.450k.exp2 <- function(base = NULL, targets = NULL, extended = FALSE,
     } else {
       files <- targets$Basename
     }
-    rgSet <- read.450k(files, extended = extended, verbose = verbose)
+    rgSet <- read.metharray(files, extended = extended, verbose = verbose)
     pD <- targets
     pD$filenames <- files
     rownames(pD) <- sampleNames(rgSet)
