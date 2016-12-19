@@ -105,6 +105,7 @@ alpha <- 0.05 / (6 * num_unique_cpgs)
 
 # Loop over all genes to output several plots investigating methylation influencing gene expression
 significantCor <- c()
+#for (gene in 17:length(Genes)) {
 for (gene in 1:length(Genes)) {
   # Extract the CGs associated with a specific gene
   #CpGs <- unique(ExtractCommonCGs(Genes[gene], CommonOverlaps))

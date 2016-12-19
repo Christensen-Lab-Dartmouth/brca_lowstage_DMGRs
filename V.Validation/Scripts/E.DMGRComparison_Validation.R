@@ -44,9 +44,9 @@ find_min_DMGR <- function (data, DMGR) {
 # Load Data
 ################################
 # Load adjusted data and deltas
-adjustedQ <- read.table("V.Validation/Data/Validation_set_qvalues_adjusted.csv", 
+adjustedQ <- read.table("V.Validation/Data/Validation_qvalues_adjusted.csv", 
                         sep = ",", stringsAsFactors = F)
-Val.Deltas <- read.table("V.Validation/Data/Validation_set_delta.csv", sep = ",", 
+Val.Deltas <- read.table("V.Validation/Data/Validation_delta.csv", sep = ",", 
                          stringsAsFactors = F)
 
 # Combine them into one variable
@@ -68,8 +68,9 @@ annotation <- annotation[annotation$TargetID %in% rownames(adjustedQ), ]
 
 # Load Test Set low stage overlapping DMGRs
 test_set <- read_csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_FullAnnotation_extended.csv")
-rownames(test_set) <- test_set[ ,1]
-test_set <- test_set[ ,-1]
+rownames(test_set) <- test_set[[1]]
+test_set[[1]] <- NULL
+test_set <- as.data.frame(test_set)
 
 rm(Val.Deltas, annoFirst, annoReg)
 ################################
@@ -103,15 +104,17 @@ plotReady <- CombineOrdered
 ################################
 # Load Betas
 Betas <- read_tsv("V.Validation/Data/Validation_Betas.tsv")
-rownames(Betas) <- Betas[ ,1]
-Betas <- Betas[ ,-1]
+rownames(Betas) <- Betas[[1]]
+Betas[[1]] <- NULL
+Betas <- as.data.frame(Betas)
 
 # Load Annotation File with Gene Regions
 annotationGR <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv", stringsAsFactors = F, row.names = 1, 
                            header = T, sep = ",", nrows = 1000000, comment.char = "")
 
 # Load Annotation File with Map Info
-annotationMap <- read_csv("I.Data_Processing/Files/HumanMethylation450_15017482_v.1.1.csv")
+annotationMap <- read_csv("I.Data_Processing/Files/HumanMethylation450K_Annotation_File.csv", skip = 7)
+annotationMap <-  as.data.frame(annotationMap)
 
 # Load covariate file
 covariates <- read.table("V.Validation/Tables/ValidationSampleID.txt", sep = ",", row.names = 1, 

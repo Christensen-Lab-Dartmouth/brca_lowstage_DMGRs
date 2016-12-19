@@ -99,6 +99,7 @@ for (i in 1:nrow(CommonOverlaps)) {
 # Gene Specific Heatmap
 ################################
 # Write all Heatmaps to file
+#for (i in 12:nrow(CommonOverlaps)) {
 for (i in 1:nrow(CommonOverlaps)) {
   # Function in make_heatmaps.R
   #cgs <- ExtractCommonCGs(Genes[i], CommonOverlaps)
