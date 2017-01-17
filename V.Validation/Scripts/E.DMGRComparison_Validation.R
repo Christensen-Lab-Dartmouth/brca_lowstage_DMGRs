@@ -268,10 +268,14 @@ text(x = 400000, y = 0.1,
      rownames(test_set)[12], cex = textcex, pos = 2, offset = 1.25) #  
 text(x = as.numeric(paste(Indices))[13] - 180000, y = -log10(as.numeric(paste(Q)))[4] + 4, 
      rownames(test_set)[13], cex = textcex, pos = 2, offset = 4) # PLEKHN1 Body
-
 text(x = as.numeric(paste(Indices))[14] - 110000, y = -log10(as.numeric(paste(Q)))[4] + 6, 
      rownames(test_set)[14], cex = textcex, pos = 2, offset = 4) # PLEKHN1 3'UTR
-
+text(x = as.numeric(paste(Indices))[15] - 110000, y = -log10(as.numeric(paste(Q)))[4] + 8, 
+     rownames(test_set)[15], cex = textcex, pos = 2, offset = 4) # C1orf170 Body
+text(x = as.numeric(paste(Indices))[16] + 100000, y = -log10(as.numeric(paste(Q)))[4] + 10, 
+     rownames(test_set)[16], cex = textcex, pos = 2, offset = 4) #  C1orf170 TSS1500
+text(x = as.numeric(paste(Indices))[17] + 70000, y = -log10(as.numeric(paste(Q)))[4] + 12, 
+     rownames(test_set)[17], cex = textcex, pos = 2, offset = 4) # HES4 TSS1500
 legend("topleft", inset = 0.05, title = "DMGRs", c("Test Set"), 
        fill = c("red"), cex = 2, bty = "n")
 dev.off()

@@ -105,12 +105,10 @@ colnames(adjusted) <- colnames(unadjusted) <- c("pvalues", "qvalues", "beta")
 summary(adj.q)
 summary(unadj.q)
 
-# Extract deltas - MORE WORK TO DO HERE
+# Extract deltas 
 deltas <- lf_Omega$coefficients[, 2] - lf_Null$coefficients[, 2]
 deltas <- cbind(deltas, rep(1, length(deltas)))
 
-#seDelta <- apply(RefFree_DMGR_Boots[, 4]-rfb[ , , "B", ], 1:2, sd)
-#pvDelta <- 2 * pt(-abs(Delta)/seDelta[ ,2], denDegFree)
 rownames(deltas) <- rownames(betas)
 colnames(deltas) <- c("Delta", "temp")
 
