@@ -277,7 +277,6 @@ for (i in 1:length(MasterList)) {
   
   builder <- c()
   for (j in 1:length(MasterList)) {
-    #tmp <- length(intersect(MasterList[[i]][[1]][ ,ind], MasterList[[j]][[1]][ ,ind]))
     tmp <- length(intersect(MasterList[[i]][[1]][ ,gene_region_ind], MasterList[[j]][[1]][ ,gene_region_ind]))
     builder <- c(builder, tmp)
   }
@@ -397,6 +396,12 @@ for (k in 1:length(stage)) {
 CommonLow <- rownames(VennLabels[[2]][VennLabels[[2]][ ,1] == 1 & VennLabels[[2]][ ,2] == 1 & 
                                         VennLabels[[2]][ ,3] == 1 & VennLabels[[2]][ ,4] ==  1, ])
 
+CommonHigh <- rownames(VennLabels[[1]][VennLabels[[1]][ ,1] == 1 & VennLabels[[1]][ ,2] == 1 & 
+                                       VennLabels[[1]][ ,3] == 1 & VennLabels[[1]][ ,4] ==  1, ])
+
+##############################
+# Summary for low stage tumors
+##############################
 commonSummary <- c()
 for (i in 1:(length(MasterList))) {
   
@@ -434,6 +439,47 @@ colnames(commonSummary)[23] <- "unique_cgs"
 
 # Write to file
 write.table(commonSummary, file = "III.DMGR_analysis/Tables/commonLowStageOverlaps_FullAnnotation_extended.csv", sep = ",", row.names = T, col.names = NA)
+
+##############################
+# Summary for high stage tumors
+##############################
+commonSummary_high <- c()
+for (i in 1:(length(MasterList))) {
+  
+  # subset the master list subtype specific significant DMGRs with the common low gene regions
+  tmp <- MasterList[[i]][[1]][MasterList[[i]][[1]][, gene_region_ind] %in% CommonHigh, ]
+  
+  # extract information from this subset
+  Q <- tmp$medQval
+  B <- tmp$medBetaCoef
+  D <- tmp$medDelta
+  Sign <- tmp$Sign
+  cgs <- tmp$cpgs
+  denom <- tmp$denominator
+  commonSummary_high <- cbind(commonSummary_high, Sign, Q, B, D, cgs)
+}
+
+# Name the elements of the common summary
+commonSummary_high <- cbind(commonSummary_high, denom)
+rownames(commonSummary_high) <- MasterList[[1]][[1]][MasterList[[1]][[1]][, gene_region_ind] %in% CommonHigh, ][,1]
+colnames(commonSummary_high) <- c("Basal_sign", "Basal_q", "Basal_B", "Basal_D", "Basal_cpgs",
+                             "Her2_sign", "Her2_q", "Her2_B", "Her2_D", "Her2_cpgs", 
+                             "LumA_sign", "LumA_q", "LumA_B", "LumA_D","LumA_cpgs", 
+                             "LumB_sign", "LumB_q", "LumB_B", "LumB_D", "LumB_cpgs", "Denominator")
+
+# Perform this for every row in the commonSummary matrix
+int <- unlist(apply(commonSummary_high, 1, countcgs))
+uni <- unlist(apply(commonSummary_high, 1, countUniquecgs))
+
+# combine this to the commonsummary table
+commonSummary_high <- cbind(commonSummary_high, int[match(rownames(commonSummary_high), names(int))], 
+                       uni[match(rownames(commonSummary_high), names(uni))])
+colnames(commonSummary_high)[22] <- "intersecting_cgs"
+colnames(commonSummary_high)[23] <- "unique_cgs"
+
+# Write to file
+write.table(commonSummary_high, file = "III.DMGR_analysis/Tables/commonHighStageOverlaps_FullAnnotation_extended.csv", sep = ",", row.names = T, col.names = NA)
+
 
 ################################
 # Common Low Stage DMGRs also associated with High Stage

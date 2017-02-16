@@ -97,12 +97,12 @@ for (subt in subtype) {
     # Unadjusted Plot
     un <- ggplot(unadjusted, aes(as.numeric(paste(unadjusted[ ,3])), 
                                  -log10(as.numeric(paste(unadjusted[ ,1]))))) + 
-      geom_point(aes(colour = deltas[ ,1]), size = 9) + 
-      scale_color_gradient2(low = "blue", mid = "grey", high = "red") + 
+      #geom_point(aes(colour = deltas[ ,1]), size = 9) + 
+      geom_point(colour = '#989898', fill = '#C7BBC9', pch = 21, size = 9) + 
+      #scale_color_gradient2(low = "blue", mid="grey", high = "red") +   
       labs(list(x = "Beta Coefficient", 
                 y = "-log10 p Value", 
-                title = paste("Unadjusted\n", subtype_name, "-", stage_name), 
-                color = "Delta")) + 
+                title = paste("Unadjusted\n", subtype_name, "-", stage_name))) + 
       geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
       geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
       xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme
@@ -111,6 +111,7 @@ for (subt in subtype) {
     ad <- ggplot(adjusted, aes(as.numeric(paste(adjusted[ ,3])), 
                                -log10(as.numeric(paste(adjusted[ ,1]))))) + 
       geom_point(aes(colour = deltas[ ,1]), size = 9) + 
+      #geom_point(colour = '#808080', fill = deltas[ ,1], pch = 21, size = 9) +
       scale_color_gradient2(low = "blue", mid = "grey", high = "red") + 
       labs(list(x = "Beta Coefficient", 
                 y = "-log10 p Value", 
@@ -118,24 +119,23 @@ for (subt in subtype) {
                 color = "Delta")) + 
       geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
       geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
-      xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme
+      xlim((-1 * maxX), maxX) + ylim(0, maxY) + overall_theme 
+    # # Adjusted plot with different max y value
+    # ad1 <- ggplot(adjusted, aes(as.numeric(paste(adjusted[,3])), 
+    #                             -log10(as.numeric(paste(adjusted[,1]))))) + 
+    #   geom_point(aes(colour = deltas[ ,1]), size = 9) + 
+    #   scale_color_gradient2(low = "blue", mid="grey", high = "red") + 
+    #   labs(list(x = "Beta Coefficient", 
+    #             y = "-log10 p Value", 
+    #             title = paste("Adjusted (Resized)\n", subtype_name, "-", stage_name), 
+    #             color = "Delta")) + 
+    #   geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
+    #   geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
+    #   xlim((-1 * maxX), maxX) + ylim(0, maxY1) + overall_theme
     
-    # Adjusted plot with different max y value
-    ad1 <- ggplot(adjusted, aes(as.numeric(paste(adjusted[,3])), 
-                                -log10(as.numeric(paste(adjusted[,1]))))) + 
-      geom_point(aes(colour = deltas[ ,1]), size = 9) + 
-      scale_color_gradient2(low = "blue", mid="grey", high = "red") + 
-      labs(list(x = "Beta Coefficient", 
-                y = "-log10 p Value", 
-                title = paste("Adjusted (Resized)\n", subtype_name, "-", stage_name), 
-                color = "Delta")) + 
-      geom_hline(yintercept = qcut1, color = "red", linetype = "dashed", size = 1.8) + 
-      geom_hline(yintercept = qcut2, color = "black", linetype = "dashed", size = 1.8) +
-      xlim((-1 * maxX), maxX) + ylim(0, maxY1) + overall_theme
-    
-    png(paste("II.RefFreeEWAS/Figures/", subtype_name, "_", stage_name, "_volcano.png", sep = ""), 
+    png(paste("II.RefFreeEWAS/Figures/", subtype_name, "_", stage_name, "_volcano2.png", sep = ""), 
         width = 4000, height = 1800)
-    grid.arrange(un, ad, ad1, ncol = 3, nrow = 1)
+    grid.arrange(un, ad, ncol = 2, nrow = 1)
     dev.off()
   }
 }

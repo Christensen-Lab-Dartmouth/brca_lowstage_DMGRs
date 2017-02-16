@@ -82,7 +82,7 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
     }
     colStage <- c("grey", "black", "white")
     colStage <- rbind(colStage, c("low", "high", "normal"))
-    
+
     # Get Stage Colors
     colorStageVector <- covariates$pathologic_stage
     for (i in 1:length(stages)) {
@@ -117,7 +117,8 @@ CGHeatmap <- function (genename, cgs, regions, annotationGR, annotationMap,
     
     # Change the name of some variables
     subtypelables <- subtypes
-    subtypelables[length(subtypelables)] <- "Normal-Like"
+    #subtypelables[length(subtypelables)] <- "Normal-Like"
+    subtypelables[length(subtypelables)] <- "Normal"
     subtypelables[grepl('Basal', subtypelables)] <- 'Basal-Like'
     ################################
     # Plot Heatmap
