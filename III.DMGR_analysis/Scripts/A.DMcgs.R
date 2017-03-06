@@ -128,7 +128,7 @@ for (model_stage in s) {
     ################################
     # Compile DMGRs, location, direction and write to file
     ################################
-    # Apply the functions in "II.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" 
+    # Apply the functions in "III.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" 
     # to output specific matrix and write to file
     for (j in 1:length(anno.sub)) {
       # for debugging only
