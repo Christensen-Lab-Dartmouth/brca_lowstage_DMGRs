@@ -21,9 +21,10 @@ library(plyr)
 # Load smallest beta files (all of them contain all normal samples)
 beta.file <- "V.Validation/Data/Validation_Betas.tsv"
 beta2 <- read_tsv(beta.file)
-rownames(beta2) <- beta2[ ,1]
-beta2 <- beta2[ ,-1]
+rownames(beta2) <- beta2[[1]]
+beta2[[1]] <- NULL
 colnames(beta2) <- laply(colnames(beta2), function(x){paste(unlist(strsplit(x, "_"))[2], unlist(strsplit(x, "_"))[3], sep = "_")})
+beta2 <- as.data.frame(beta2)
 
 # load total covariate file
 covariates <- read.table("V.Validation/Data/GSE60185_manifest.csv", row.names = 1, header = T, sep = ",", stringsAsFactors = F)

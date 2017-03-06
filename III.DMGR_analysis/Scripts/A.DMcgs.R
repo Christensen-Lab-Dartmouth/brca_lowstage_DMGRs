@@ -41,8 +41,21 @@ colnames(annotation)[ncol(annotation)] <- "GeneRegion"
 ################################
 # Analysis
 ################################
-s <- c('low', 'high')
-t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
+#s <- c('low', 'high')
+#t <- c('Basal', 'Her2', 'LumA', 'LumB', 'Normal')
+
+s <- c('low')
+#s <- c('high')
+
+t <- c('Basal')
+#t <- c('Her2')
+#t <- c('LumA')
+#t <- c('LumB')
+#t <- c('Normal')
+
+# for debugging only 
+#model_stage <- s
+#model_subtype <- t
 
 for (model_stage in s) {
   for (model_subtype in t) {
@@ -62,8 +75,9 @@ for (model_stage in s) {
     
     # Load the file holding beta values corresponding to the specific subtype
     beta2 <- read_tsv(beta.file, col_names = T)
-    rownames(beta2) <- beta2[ ,1]
-    beta2 <- beta2[ ,-1]
+    rownames(beta2) <- beta2[['X1']]
+    beta2[ ,1] <- NULL
+    beta2 <- as.data.frame(beta2)
     
     # Subset the covariate data to only the samples in the beta file
     covariates <- covariates_full[intersect(rownames(covariates_full), colnames(beta2)), ]
@@ -81,44 +95,45 @@ for (model_stage in s) {
     q <- qvalList(beta = beta2, subtype = subtype, stage = stage, covariates = covariates, 
                   qvalcut = qvalcut, filelist = "II.RefFreeEWAS/Data/")
     
-    ################################
-    # Subset and Recode Annotation File
-    ################################
     # This loop will combine q values with annotation cgs and gene regions
     anno.sub <- list()
     for (i in 1:length(q[[1]])) {
+
       if (nrow(q[[1]][[i]]) != 0) {
         # Extract the q value information
         frame <- q[[1]][[i]]
-        
+
         # name it
         frame <- cbind(rownames(frame), frame)
-        
+
         # subset the annotation file to only those with significant q values
         sub <- annotation[annotation$TargetID %in% rownames(frame), ]
-        
+
         # only consider cpgs that have gene information
         sub <- sub[sub[ , 12] != "", ]
-        
+
         # subset q value info
         frame.sub <- frame[match(sub$TargetID, rownames(frame)), ]
-        
+
         # combine q value info with annotation
         anno.sub[[i]] <- cbind(sub, frame.sub)
         names(anno.sub)[i] <- names(q[[1]])[i]
-        
+
       } else {
         cat("No Significant q value cgs")
       }
+
     }
     
     ################################
     # Compile DMGRs, location, direction and write to file
     ################################
-    # Apply the functions in "II.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" 
+    # Apply the functions in "III.DMGR_analysis/Scripts/Functions/DMcgs_functions.R" 
     # to output specific matrix and write to file
     for (j in 1:length(anno.sub)) {
-      
+      # for debugging only
+      #anno.sub[[j]] <- anno.sub[[j]][1:100, ]
+                  
       # Subset Beta File
       betaSub <- beta2[unique(anno.sub[[j]]$TargetID), rownames(q[[2]])]
       

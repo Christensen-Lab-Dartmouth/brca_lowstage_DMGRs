@@ -32,7 +32,7 @@ library(minfi)
 # Read in full beta values
 beta <- read.table("I.Data_Processing/Data/TCGA_BRCA_Betas.tsv", row.names = 1, header = T, 
                    sep = "\t", stringsAsFactors = F, nrows = 450000, comment.char = "", 
-                   colClasses = c("character", rep("numeric", 870)))
+                   colClasses = c("character", rep("numeric", 862)))
 
 # Load covariate file
 covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", row.names = 1, 

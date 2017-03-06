@@ -12,8 +12,9 @@
 ################################
 # Load commandArgs
 ################################
-args <- commandArgs(trailingOnly = T)
-destination <- args[1]
+#args <- commandArgs(trailingOnly = T)
+#destination <- args[1]
+destination <- "../../Documents/IDAT/"
 
 # Create the directory if it does not already exist (will not rewrite)
 dir.create(destination, recursive = T, showWarnings = F)
@@ -21,6 +22,8 @@ dir.create(destination, recursive = T, showWarnings = F)
 ################################
 # Load Libraries
 ################################
+#source("http://bioconductor.org/biocLite.R")
+#biocLite("GEOquery")
 library(GEOquery)
 
 ################################

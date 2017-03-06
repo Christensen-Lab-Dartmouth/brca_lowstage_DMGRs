@@ -1,0 +1,13 @@
+"","Subtype","Stage","Dimensionality","n","bootstraps"
+"1","Basal","high","3","14","10"
+"2","Basal","low","5","69","10"
+"3","Her2","high","4","10","10"
+"4","Her2","low","5","20","10"
+"5","LumA","high","5","69","10"
+"6","LumA","low","9","204","10"
+"7","LumB","high","4","40","10"
+"8","LumB","low","7","82","10"
+"9","Normal","high","7","4","10"
+"10","Normal","low","8","13","10"
+"11","Normal Tissue","Normal","13","97","No RefFree Run"
+"12","FullSet",NA,"74","843",NA

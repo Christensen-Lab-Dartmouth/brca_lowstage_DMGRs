@@ -13,22 +13,27 @@
 ################################
 # Load Libraries
 ################################
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("minfi")
+#biocLite("IlluminaHumanMethylation450kmanifest")
+#biocLite("IlluminaHumanMethylation450kanno.ilmn12.hg19")
 library(minfi)  # v1.12.0
 library(plyr)
 library(IlluminaHumanMethylation450kmanifest) #v0.4.0
 library(IlluminaHumanMethylation450kanno.ilmn12.hg19) #v0.2.1
 source("I.Data_Processing/Scripts/Functions/read.450k.exp2.R")
 
-args <- commandArgs(trailingOnly = T)
+#args <- commandArgs(trailingOnly = T)
 ##########################################
 # Step 1: Load IDAT files of interest
 ##########################################
 # Location of IDAT files for study (Place the IDAT files in a designated file location)
 # idat <- "../../Documents/IDAT"
-idat <- args[1]
+#idat <- args[1]
+idat <- "../../Documents/IDAT"
 
 # Read a .csv file of covariates in the same location of the idat files (Be sure the other .csv file was previously removed from the IDAT file location)
-manifest <- read.450k.sheet(idat)
+manifest <- read.metharray.sheet(idat)
 
 # Subset the Manifest File to only Low Stage Breast Tumors and Normal Samples
 manifest <- manifest[manifest[,"Sample_Group"] == "IDC" | manifest[,"Sample_Group"] == "control", ]

@@ -1,0 +1,21 @@
+#!/bin/bash -l
+# Queue to use
+#PBS -q default
+# NAME of job
+#PBS -N analysis
+# Account resources to use
+#PBS -A Amos
+# Resources to reserve
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=240:00:00
+# Send email to this address
+#PBS -M Alexander.J.Titus.GR@Dartmouth.edu
+# When to send defined here
+#PBS -m bea
+# Change to job working directory
+cd $PBS_O_WORKDIR
+##############################
+# Enter your code to run below
+##############################
+bash analysis.sh
+# python II.RefFreeEWAS/Scripts/Functions/RefFree_Discovery2.py

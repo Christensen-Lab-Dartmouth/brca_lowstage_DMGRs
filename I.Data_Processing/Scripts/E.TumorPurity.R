@@ -21,7 +21,8 @@ covariates <- read.table("I.Data_Processing/Files/BRCAtarget_covariates.csv", ro
 # We are only interested in summarizing Primary Tumors
 covariates <- covariates[covariates$sample.type == "Primary Tumor",]
 covariates <- covariates[covariates$pathologic_stage != "" & covariates$pathologic_stage != "[Discrepancy]" & covariates$pathologic_stage != "Stage X" & covariates$PAM50.RNAseq != "",]
-covSubset <- covariates[ ,c(2,5,8,9,10)]
+# covSubset <- covariates[ ,c(2,5,8,9,10)]
+covSubset <- covariates[ ,c(3,6,9,10,11)]
 
 # Remove normal tumors
 covSubset <- covSubset[covSubset$PAM50.RNAseq != "Normal", ]
@@ -90,7 +91,8 @@ write.table(summary, file = "I.Data_Processing/Tables/covariateTumorPuritySummar
 # Build BarChart
 ################################
 # First, build a dataframe to melt to get ready for ggplot
-ggplotCov <- covariates[ ,c(2,5,8,9,10)]
+# ggplotCov <- covariates[ ,c(2,5,8,9,10)]
+ggplotCov <- covariates[ ,c(3,6,9,10,11)]
 
 # only consider samples with complete information
 ggplotCov <- ggplotCov[complete.cases(ggplotCov), ]

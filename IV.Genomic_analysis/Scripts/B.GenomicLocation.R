@@ -12,6 +12,9 @@
 ################################
 # Load Libraries
 ################################
+#source("https://bioconductor.org/biocLite.R")
+#biocLite("Gviz")
+#biocLite("Homo.sapiens")
 library(Gviz)
 library(Homo.sapiens)
 library(readr)
@@ -38,7 +41,7 @@ PlotGvizTracks <- function (gene, toggle = c(100,00)) {
   # Extract all of the differentially  methylated CpGs from the given gene input
   CpGs <- unique(ExtractCommonCGs(gene))
   
-  # Subset the annotation filew
+  # Subset the annotation file
   Anno.Gene <- annotation[annotation$Name %in% CpGs, ]
   
   # Get the location of the significant CpGs
@@ -58,7 +61,7 @@ PlotGvizTracks <- function (gene, toggle = c(100,00)) {
   itr <- IdeogramTrack(genome="hg19", chromosome=chrom)
   
   # Obtain the actual genomic location id numbers
-  gtr <- GenomeAxisTrack()
+  gtr <- GenomeAxisTrack(genome="hg19", chromosome=chrom)
   
   # Pull information from UCSC 
   # Get all known genes in that range
@@ -78,18 +81,20 @@ PlotGvizTracks <- function (gene, toggle = c(100,00)) {
                      col.histogram="black")
   
   # Draw lines where the specific CpGs are
-  ht1 <- HighlightTrack(trackList = list(knownGenes, cpgIslands, dnase), start = CpG.loc, width = 1, chromosome = chrom, 
+  ht1 <- HighlightTrack(genome = "hg19", trackList = list(knownGenes, cpgIslands, dnase), start = CpG.loc, width = 1, chromosome = chrom, 
                         col = "red", inBackground = F)
   
   # Plot the tracks on the screen
-  plotTracks(list(itr, gtr, ht1), from = from, to = to, sizes = c(1, 2, 4, 2, 2.5), cex = 0.85, cex.sampleNames = 2, showTitle = T)
+  plotTracks(trackList = list(itr, gtr, ht1), from = from, to = to, sizes = c(1, 2, 4, 2, 2.5), 
+                                              cex = 0.85, cex.sampleNames = 2, showTitle = T)
 }
 
 ################################
 # Load Data
 ################################
 # Load extended annotation file. This file does not ignore multiple genes for a single cpg
-annotation <- read_csv("I.Data_Processing/Files/HumanMethylation450_15017482_v.1.1.csv")
+annotation <- read_csv("I.Data_Processing/Files/HumanMethylation450K_Annotation_File.csv", skip = 7)
+annotation <- as.data.frame(annotation)
 
 # Load Common Overlaps
 CommonOverlaps <- read.csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_FullAnnotation_extended.csv", 

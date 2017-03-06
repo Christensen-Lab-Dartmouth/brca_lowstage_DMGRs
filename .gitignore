@@ -1,3 +1,8 @@
 .DS_Store
 .Rhistory
 .checkpoint
+
+I.Data_Processing/Data/*
+I.Data_Processing/Files/Expanded_annotationfile.csv
+I.Data_Processing/Files/HumanMethylation450K_Annotation_File.csv
+V.Validation/Data/*

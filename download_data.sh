@@ -1,5 +1,6 @@
 # All data is publicly available and was retrieved from The Cancer Genome Atlas
 # Downloaded March 2015
+# Showing owen the workflow
 
 url='https://zenodo.org/record/153930/files/TCGA_BRCA_IDAT.tar.gz'
 wget --directory-prefix 'I.Data_Processing/Data' $url

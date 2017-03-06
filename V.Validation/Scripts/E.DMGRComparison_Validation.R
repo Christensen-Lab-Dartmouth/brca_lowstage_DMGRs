@@ -44,9 +44,9 @@ find_min_DMGR <- function (data, DMGR) {
 # Load Data
 ################################
 # Load adjusted data and deltas
-adjustedQ <- read.table("V.Validation/Data/Validation_set_qvalues_adjusted.csv", 
+adjustedQ <- read.table("V.Validation/Data/Validation_qvalues_adjusted.csv", 
                         sep = ",", stringsAsFactors = F)
-Val.Deltas <- read.table("V.Validation/Data/Validation_set_delta.csv", sep = ",", 
+Val.Deltas <- read.table("V.Validation/Data/Validation_delta.csv", sep = ",", 
                          stringsAsFactors = F)
 
 # Combine them into one variable
@@ -68,8 +68,9 @@ annotation <- annotation[annotation$TargetID %in% rownames(adjustedQ), ]
 
 # Load Test Set low stage overlapping DMGRs
 test_set <- read_csv("III.DMGR_analysis/Tables/commonLowStageOverlaps_FullAnnotation_extended.csv")
-rownames(test_set) <- test_set[ ,1]
-test_set <- test_set[ ,-1]
+rownames(test_set) <- test_set[[1]]
+test_set[[1]] <- NULL
+test_set <- as.data.frame(test_set)
 
 rm(Val.Deltas, annoFirst, annoReg)
 ################################
@@ -103,15 +104,17 @@ plotReady <- CombineOrdered
 ################################
 # Load Betas
 Betas <- read_tsv("V.Validation/Data/Validation_Betas.tsv")
-rownames(Betas) <- Betas[ ,1]
-Betas <- Betas[ ,-1]
+rownames(Betas) <- Betas[[1]]
+Betas[[1]] <- NULL
+Betas <- as.data.frame(Betas)
 
 # Load Annotation File with Gene Regions
 annotationGR <- read.table("I.Data_Processing/Files/Expanded_annotationfile.csv", stringsAsFactors = F, row.names = 1, 
                            header = T, sep = ",", nrows = 1000000, comment.char = "")
 
 # Load Annotation File with Map Info
-annotationMap <- read_csv("I.Data_Processing/Files/HumanMethylation450_15017482_v.1.1.csv")
+annotationMap <- read_csv("I.Data_Processing/Files/HumanMethylation450K_Annotation_File.csv", skip = 7)
+annotationMap <-  as.data.frame(annotationMap)
 
 # Load covariate file
 covariates <- read.table("V.Validation/Tables/ValidationSampleID.txt", sep = ",", row.names = 1, 
@@ -229,9 +232,9 @@ axis(2, col = "black", cex.lab = 2, cex.axis = 2, lwd = 2)
 
 # Add dashed lines indicating cutoff
 abline(h = -log10(0.01), col = "grey", lwd = 3, lty = "dashed")
-text(x = 1e+05, y = -log10(0.01) + 0.3, "Q = 0.01", col = "grey", cex = 2.5)
+text(x = 5.25e+05, y = -log10(0.01) + 1.3, "Q = 0.01", col = "grey", cex = 2.5)
 abline(h = -log10(0.05), col = "grey", lwd = 3, lty = "dashed")
-text(x = 1e+05, y = -log10(0.05) + 0.3, "Q = 0.05", col = "grey", cex = 2.5)
+text(x = 5.25e+05, y = -log10(0.05) - 1.3, "Q = 0.05", col = "grey", cex = 2.5)
 
 # Add points for the test set overlap
 points(x = as.numeric(paste(Indices)), y = -log10(as.numeric(paste(Q))), pch = 16, 
@@ -239,34 +242,40 @@ points(x = as.numeric(paste(Indices)), y = -log10(as.numeric(paste(Q))), pch = 1
 
 # Add text in different locations to avoid overlap
 textcex = 1.7
-text(x = as.numeric(paste(Indices))[1],
-     y = -log10(as.numeric(paste(Q)))[1] + .15,
-     rownames(test_set)[1],
-     cex = textcex, pos = 2, offset = 2.1)  # HDAC4 Body
-
-text(x = as.numeric(paste(Indices))[c(5, 8)], 
-     y = -log10(as.numeric(paste(Q)))[c(5, 8)], 
-     rownames(test_set)[c(5, 8)], 
-     cex = textcex, pos = 2, offset = 2.1)
-text(x = 600000, y = 0.2, 
-     rownames(test_set)[12], cex = textcex, pos = 2, offset = 1.25) # FCGRT TSS1500
+text(x = as.numeric(paste(Indices))[1],y = -log10(as.numeric(paste(Q)))[1] + 2.15,
+     rownames(test_set)[1], cex = textcex, pos = 2, offset = 2.1)  # WASH5P Body
 text(x = as.numeric(paste(Indices))[2] - 10000, y = -log10(as.numeric(paste(Q)))[2] + 0.05, 
-     rownames(test_set)[2], cex = textcex, pos = 2, offset = 1.25)  # GNAI2 Body
-text(x = as.numeric(paste(Indices))[11], y = -log10(as.numeric(paste(Q)))[11] + 0.06, 
-     rownames(test_set)[11], cex = textcex, pos = 2, offset = 1.25)  # RPTOR Body
+     rownames(test_set)[2], cex = textcex, pos = 2, offset = 1.25)  # 
+text(x = as.numeric(paste(Indices))[3] - 00000, y = -log10(as.numeric(paste(Q)))[3] + 0.5, 
+     rownames(test_set)[3], cex = textcex, pos = 2, offset = .25) # FAM41C TSS1500
+text(x = as.numeric(paste(Indices))[4] - 180000, y = -log10(as.numeric(paste(Q)))[4] + .025, 
+     rownames(test_set)[4], cex = textcex, pos = 2, offset = 4) # FLJ39609 TSS200
+text(x = as.numeric(paste(Indices))[5], y = -log10(as.numeric(paste(Q)))[5] - 0.4, 
+     rownames(test_set)[5], cex = textcex, pos = 2, offset = 2.1) # SAMD11 TSS1500
+text(x = as.numeric(paste(Indices))[6] - 15000, y = -log10(as.numeric(paste(Q)))[6] + 0.5, 
+     rownames(test_set)[6], cex = textcex, pos = 2, offset = .25) # SAMD11 5'UTR
 text(x = as.numeric(paste(Indices))[7], y = -log10(as.numeric(paste(Q)))[7] + 0.2, 
-     rownames(test_set)[7], cex = textcex, pos = 2, offset = 1.25)  # LRP5 Body
-text(x = as.numeric(paste(Indices))[10], y = -log10(as.numeric(paste(Q)))[10] + 0.2, 
-     rownames(test_set)[10], cex = textcex, pos = 2, offset = 1.25)  # ANKRD11 5UTR
-text(x = as.numeric(paste(Indices))[3] - 40000, y = -log10(as.numeric(paste(Q)))[3] + 7, 
-     rownames(test_set)[3], cex = textcex, pos = 2, offset = .25)
-text(x = as.numeric(paste(Indices))[6] - 205000, y = -log10(as.numeric(paste(Q)))[6] + 7, 
-     rownames(test_set)[6], cex = textcex, pos = 2, offset = .25)
-text(x = as.numeric(paste(Indices))[9] + 30000, y = -log10(as.numeric(paste(Q)))[9] + 0.17, 
-     rownames(test_set)[9], cex = textcex, pos = 2, offset = 4)  # CMIP Body
-text(x = as.numeric(paste(Indices))[4], y = -log10(as.numeric(paste(Q)))[4] + .025, 
-     rownames(test_set)[4], cex = textcex, pos = 2, offset = 4)
-
+     rownames(test_set)[7], cex = textcex, pos = 2, offset = 1.25)  # 
+text(x = as.numeric(paste(Indices))[8], y = -log10(as.numeric(paste(Q)))[8] + 2.5, 
+     rownames(test_set)[8], cex = textcex, pos = 2, offset = 2.1) # NOC2L Body
+text(x = as.numeric(paste(Indices))[9] , y = -log10(as.numeric(paste(Q)))[9] + 0.0, 
+     rownames(test_set)[9], cex = textcex, pos = 2, offset = 4)  # KLHL17 Body 
+text(x = as.numeric(paste(Indices))[10]-180000, y = -log10(as.numeric(paste(Q)))[10] - 0.05, 
+     rownames(test_set)[10], cex = textcex, pos = 2, offset = 1.25)  #  PLEKHN1 TSS1500
+text(x = as.numeric(paste(Indices))[11], y = -log10(as.numeric(paste(Q)))[11], 
+     rownames(test_set)[11], cex = textcex, pos = 2, offset = 1.25)  #  
+text(x = 400000, y = 0.1, 
+     rownames(test_set)[12], cex = textcex, pos = 2, offset = 1.25) #  
+text(x = as.numeric(paste(Indices))[13] - 180000, y = -log10(as.numeric(paste(Q)))[4] + 4, 
+     rownames(test_set)[13], cex = textcex, pos = 2, offset = 4) # PLEKHN1 Body
+text(x = as.numeric(paste(Indices))[14] - 110000, y = -log10(as.numeric(paste(Q)))[4] + 6, 
+     rownames(test_set)[14], cex = textcex, pos = 2, offset = 4) # PLEKHN1 3'UTR
+text(x = as.numeric(paste(Indices))[15] - 110000, y = -log10(as.numeric(paste(Q)))[4] + 8, 
+     rownames(test_set)[15], cex = textcex, pos = 2, offset = 4) # C1orf170 Body
+text(x = as.numeric(paste(Indices))[16] + 100000, y = -log10(as.numeric(paste(Q)))[4] + 10, 
+     rownames(test_set)[16], cex = textcex, pos = 2, offset = 4) #  C1orf170 TSS1500
+text(x = as.numeric(paste(Indices))[17] + 70000, y = -log10(as.numeric(paste(Q)))[4] + 12, 
+     rownames(test_set)[17], cex = textcex, pos = 2, offset = 4) # HES4 TSS1500
 legend("topleft", inset = 0.05, title = "DMGRs", c("Test Set"), 
        fill = c("red"), cex = 2, bty = "n")
 dev.off()
