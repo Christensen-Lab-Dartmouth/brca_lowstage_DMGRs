@@ -1,6 +1,6 @@
 # Cell-type (and subtype) independent DNA methylation alterations in breast cancer 
 
-Titus, A.J., Way, G., Johnson, K., Christensen, B. 2016, Manuscript in preparation
+Titus, A.J., Way, G., Johnson, K., Christensen, B. 2017, Manuscript in preparation
 
 [![DOI](https://zenodo.org/badge/45754471.svg)](https://zenodo.org/badge/latestdoi/45754471)
 
@@ -10,7 +10,7 @@ Titus, A.J., Way, G., Johnson, K., Christensen, B. 2016, Manuscript in preparati
 The following repository contains all scripts required to reproduce an analysis
 of early stage invasive breast carcinoma investigating similarities in DNA
 methylation as measured by The Cancer Genome Atlas on the Illumina 450k platform.
-At the core of the analysis is a reference free adjustment of cell type
+At the core of the analysis is a reference-free adjustment of cell type
 proportion ([Houseman _et al._ BMC Bioinformatics 2014](https://doi.org/10.1186/s12859-016-1140-4))
 on each PAM50 subtype stratified by early and late stages. After the adjustment,
 we observe key differentially methylated gene regions (DMGRs) in common to all
