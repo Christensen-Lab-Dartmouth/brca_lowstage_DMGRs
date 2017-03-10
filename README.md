@@ -6,16 +6,20 @@ Titus, A.J., Way, G., Johnson, K., Christensen, B. 2016, Manuscript in preparati
 
 
 ## Summary 
+
 The following repository contains all scripts required to reproduce an analysis
-of low stage invasive breast carcinoma investigating similarities in DNA
-methylation measured by The Cancer Genome Atlas on the Illumina 450k platform.
+of early stage invasive breast carcinoma investigating similarities in DNA
+methylation as measured by The Cancer Genome Atlas on the Illumina 450k platform.
 At the core of the analysis is a reference free adjustment of cell type
-proportion ([Houseman, Molitor, and Marsit. Bioinformatics
-2014](10.1093/bioinformatics/btu029)) on each PAM50 subtype stratified by low
-and high stages. After the adjustment, we observe key gene regions of
-differential methylation in common to all PAM50 subtypes in the low stage. We
-also validate these findings in a Validation set
-([Yang et al. Genome Biology 2015](10.1186/s13059-015-0699-9)).
+proportion ([Houseman _et al._ BMC Bioinformatics 2014](https://doi.org/10.1186/s12859-016-1140-4))
+on each PAM50 subtype stratified by early and late stages. After the adjustment,
+we observe key differentially methylated gene regions (DMGRs) in common to all
+early stage tumors regardless of PAM50 subtype. We also validate these findings
+in a Validation set ([Yang _et al._ Genome Biology 2015](10.1186/s13059-015-0699-9)).
+
+Our findings implicate a small region localized entirely on chromosome 1p36.3
+that harbors common DMGRs. This region has previously been shown to be important
+for cancer initiation and prognosis.
 
 ## Contact 
 
