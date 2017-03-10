@@ -2,7 +2,8 @@
 
 Titus, A.J., Way, G., Johnson, K., Christensen, B. 2016, Manuscript in preparation
 
-[![DOI](https://zenodo.org/badge/18957/gwaygenomics/brca_lowstage_DMGRs.svg)](https://zenodo.org/badge/latestdoi/18957/gwaygenomics/brca_lowstage_DMGRs)
+[![DOI](https://zenodo.org/badge/45754471.svg)](https://zenodo.org/badge/latestdoi/45754471)
+
 
 ## Summary 
 The following repository contains all scripts required to reproduce an analysis
