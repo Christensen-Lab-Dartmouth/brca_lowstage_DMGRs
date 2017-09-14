@@ -1,4 +1,4 @@
-# Cell-type (and subtype) independent DNA methylation alterations in breast cancer 
+# Deconvolution of DNA methylation identifies differentially methylated gene regions on 1p36 across breast cancer subtypes
 
 Titus, A.J., Way, G., Johnson, K., Christensen, B. Scientific Reports 2017 (DOI: doi:10.1038/s41598-017-10199-z)
 
@@ -26,31 +26,10 @@ for cancer initiation and prognosis.
 ## Contact 
 
 For all code related questions please file a [GitHub
-issue](https://github.com/gwaygenomics/brca_lowstage_DMGRs/issues)
+issue](https://github.com/Christensen-Lab-Dartmouth/brca_lowstage_DMGRs/issues)
 
 Questions regarding the analysis or other correspondance should be directed to:
 Brock.C.Christensen@dartmouth.edu
-
-## Analysis
-
-All scripts are intended to be run in order, as defined in `run_pipeline.sh`.
-The bash script can be run directly to reproduce the pipeline but this is not
-recommended since some steps are computationally intensive. Instead, to
-successfully reproduce this analysis, we recommend following the bash script
-line by line.
-
-The folder structure is labelled to facilitate easy step-wise navigation, as are
-the `Scripts/` folders in each parent folder. All scripts should be run from the
-top directory in the repository. For example: 
-
-```sh
-# Place downloaded IDAT files in this folder
-IDAT_loc="../../Documents/mdata/TCGAbreast_idat/"
-
-# Run preprocessing script 
-R --no-save --args "I.Data_Processing/Data/TCGA_BRCA" $IDAT_loc "nosummary" < \
-I.Data_Processing/Scripts/A.preprocess_minfi.R
-```
 
 ## Data 
 
@@ -60,4 +39,4 @@ according to the `run_pipeline.sh` script.
 ## Acknowledgements 
 
 This work was supported by the Institute for Quantitative Biomedical Sciences
-and two grants P20GM104416 and R01DE02277 (BCC)
+and two grants P20GM104416 and R01DE02277 (BCC) and a training grant T32LM012204 (AJT).
