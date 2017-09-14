@@ -7,6 +7,8 @@ Titus, A.J., Way, G., Johnson, K., Christensen, B. 2017, Manuscript in preparati
 
 ## Summary 
 
+**Update: This work is [now published](https://www.nature.com/articles/s41598-017-10199-z) in Scientific Reports!**
+
 The following repository contains all scripts required to reproduce an analysis
 of early stage invasive breast carcinoma investigating similarities in DNA
 methylation as measured by The Cancer Genome Atlas on the Illumina 450k platform.
