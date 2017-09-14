@@ -1,6 +1,6 @@
 # Cell-type (and subtype) independent DNA methylation alterations in breast cancer 
 
-Titus, A.J., Way, G., Johnson, K., Christensen, B. 2017, Manuscript in preparation
+Titus, A.J., Way, G., Johnson, K., Christensen, B. Scientific Reports 2017 (DOI: doi:10.1038/s41598-017-10199-z)
 
 [![DOI](https://zenodo.org/badge/45754471.svg)](https://zenodo.org/badge/latestdoi/45754471)
 
